@@ -236,9 +236,9 @@
             floodFill: (ctx, x, y, fillColor) => {
                 const imageData = ctx.getImageData(0, 0, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT);
                 const data = imageData.data; const width = imageData.width; const height = imageData.height;
-                const stack = [[x, y]];
+                const stack = [[Math.floor(x), Math.floor(y)]];
                 const getPixelOffset = (x, y) => (y * width + x) * 4;
-                const offset = getPixelOffset(x, y);
+                const offset = getPixelOffset(Math.floor(x), Math.floor(y));
                 const startR = data[offset]; const startG = data[offset+1]; const startB = data[offset+2]; const startA = data[offset+3];
                 const fillRgb = Utils.hexToRgb(fillColor);
                 if(!fillRgb || (startR === fillRgb.r && startG === fillRgb.g && startB === fillRgb.b)) return;
@@ -287,6 +287,7 @@
 
                 this.raycaster = new THREE.Raycaster();
                 this.mouse = new THREE.Vector2();
+                this.remoteDrawState = {};
 
                 this.drawCanvas = document.createElement('canvas');
                 this.drawCanvas.width = CONFIG.CANVAS_WIDTH;
@@ -367,56 +368,88 @@
                 return null;
             }
 
-            executeDrawAction(x, y, color, size, tool, emit = true) {
+            executeDrawAction(x, y, color, size, tool, emit = true, isNewStroke = false) {
                 if (tool === 'clear') {
                     this.drawCtx.fillStyle = '#ffffff';
                     this.drawCtx.fillRect(0, 0, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT);
                 } else if (tool === 'fill') {
                     Utils.floodFill(this.drawCtx, x, y, color);
                 } else {
-                    this.drawCtx.lineCap = 'round'; this.drawCtx.lineJoin = 'round';
-                    this.drawCtx.lineWidth = size; this.drawCtx.strokeStyle = tool === 'erase' ? '#ffffff' : color;
-                    if (AppState.drawing.isDrawing) {
-                        this.drawCtx.beginPath();
+                    this.drawCtx.lineCap = 'round'; 
+                    this.drawCtx.lineJoin = 'round';
+                    this.drawCtx.lineWidth = size; 
+                    this.drawCtx.strokeStyle = tool === 'erase' ? '#ffffff' : color;
+                    
+                    this.drawCtx.beginPath();
+                    if (isNewStroke) {
+                        this.drawCtx.moveTo(x, y);
+                        this.drawCtx.lineTo(x + 0.1, y + 0.1);
+                    } else {
                         this.drawCtx.moveTo(AppState.drawing.lastX, AppState.drawing.lastY);
-                        this.drawCtx.lineTo(x, y); this.drawCtx.stroke();
+                        this.drawCtx.lineTo(x, y); 
                     }
-                    AppState.drawing.lastX = x; AppState.drawing.lastY = y;
+                    this.drawCtx.stroke();
+                    
+                    AppState.drawing.lastX = x; 
+                    AppState.drawing.lastY = y;
                 }
                 this.canvasTexture.needsUpdate = true;
-                if (emit) Network.emit({type: 'draw', payload: {x, y, color, size, tool}});
+                if (emit) {
+                    Network.emit({
+                        type: 'draw', 
+                        payload: {x, y, color, size, tool, isNewStroke, senderId: AppState.user.id}
+                    });
+                }
             }
 
             executeRemoteDraw(data) {
                 if(data.tool === 'clear') {
-                    this.drawCtx.fillStyle = '#ffffff'; this.drawCtx.fillRect(0, 0, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT);
+                    this.drawCtx.fillStyle = '#ffffff'; 
+                    this.drawCtx.fillRect(0, 0, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT);
                 } else if(data.tool === 'fill') {
                     Utils.floodFill(this.drawCtx, data.x, data.y, data.color);
                 } else {
-                    this.drawCtx.lineCap = 'round'; this.drawCtx.lineJoin = 'round';
-                    this.drawCtx.lineWidth = data.size; this.drawCtx.strokeStyle = data.tool === 'erase' ? '#ffffff' : data.color;
-                    this.drawCtx.beginPath(); this.drawCtx.moveTo(data.x, data.y); this.drawCtx.lineTo(data.x+0.1, data.y+0.1); this.drawCtx.stroke();
+                    const sId = data.senderId || 'unknown';
+                    if (!this.remoteDrawState[sId] || data.isNewStroke) {
+                        this.remoteDrawState[sId] = { x: data.x, y: data.y };
+                    }
+
+                    this.drawCtx.lineCap = 'round'; 
+                    this.drawCtx.lineJoin = 'round';
+                    this.drawCtx.lineWidth = data.size; 
+                    this.drawCtx.strokeStyle = data.tool === 'erase' ? '#ffffff' : data.color;
+                    
+                    this.drawCtx.beginPath(); 
+                    if (data.isNewStroke) {
+                        this.drawCtx.moveTo(data.x, data.y); 
+                        this.drawCtx.lineTo(data.x+0.1, data.y+0.1); 
+                    } else {
+                        this.drawCtx.moveTo(this.remoteDrawState[sId].x, this.remoteDrawState[sId].y);
+                        this.drawCtx.lineTo(data.x, data.y);
+                    }
+                    this.drawCtx.stroke();
+
+                    this.remoteDrawState[sId].x = data.x;
+                    this.remoteDrawState[sId].y = data.y;
                 }
                 this.canvasTexture.needsUpdate = true;
             }
 
             onPointerDown(e) {
-                if (AppState.room.drawerId !== AppState.user.id) return;
+                if (AppState.room.drawerId !== AppState.user.id || AppState.room.state !== 'DRAWING') return;
                 const coords = this.getTextureCoordinates(e.clientX, e.clientY);
                 if (coords) {
                     AppState.drawing.isDrawing = true;
-                    // anchor the start point
                     AppState.drawing.lastX = coords.x; 
                     AppState.drawing.lastY = coords.y;
-                    // execute the initial dot
-                    this.executeDrawAction(coords.x, coords.y, AppState.drawing.color, AppState.drawing.size, AppState.drawing.tool, true);
+                    this.executeDrawAction(coords.x, coords.y, AppState.drawing.color, AppState.drawing.size, AppState.drawing.tool, true, true);
                 }
             }
 
             onPointerMove(e) {
-                if (!AppState.drawing.isDrawing || AppState.room.drawerId !== AppState.user.id) return;
+                if (!AppState.drawing.isDrawing || AppState.room.drawerId !== AppState.user.id || AppState.room.state !== 'DRAWING') return;
                 const coords = this.getTextureCoordinates(e.clientX, e.clientY);
-                if (coords) this.executeDrawAction(coords.x, coords.y, AppState.drawing.color, AppState.drawing.size, AppState.drawing.tool, true);
+                if (coords) this.executeDrawAction(coords.x, coords.y, AppState.drawing.color, AppState.drawing.size, AppState.drawing.tool, true, false);
             }
 
             onPointerUp() { AppState.drawing.isDrawing = false; }
@@ -493,7 +526,7 @@
                 document.getElementById('tool-brush').addEventListener('click', () => UI.setTool('brush'));
                 document.getElementById('tool-fill').addEventListener('click', () => UI.setTool('fill'));
                 document.getElementById('tool-erase').addEventListener('click', () => UI.setTool('erase'));
-                document.getElementById('tool-clear').addEventListener('click', () => window.engine.executeDrawAction(0,0,'#fff',1,'clear',true));
+                document.getElementById('tool-clear').addEventListener('click', () => window.engine.executeDrawAction(0,0,'#fff',1,'clear',true, true));
                 document.getElementById('ui-brush-size').addEventListener('input', (e) => AppState.drawing.size = parseInt(e.target.value));
             },
 
@@ -559,7 +592,7 @@
                 if(current.input) chatInput.focus();
             },
 
-            updateTimer: (seconds, totalSeconds = 80) => {
+            updateTimer: (seconds, totalSeconds = 40) => {
                 document.getElementById('ui-timer-text').innerText = seconds;
                 const ring = document.getElementById('ui-timer-ring');
                 ring.style.strokeDashoffset = 140 - (seconds / totalSeconds) * 140;
@@ -576,6 +609,9 @@
                     const btn = document.createElement('div');
                     btn.className = 'word-option-btn'; btn.innerText = word;
                     btn.onclick = () => { 
+                        if (btn.dataset.clicked) return;
+                        btn.dataset.clicked = 'true';
+                        
                         if (AppState.isHost) {
                             GameServer.handleWordSelect(word);
                         } else {
@@ -610,7 +646,6 @@
                         window.engine.canvasTexture.needsUpdate = true;
                     }
                     
-                    
                     if (data.type === 'draw' && message.clientId !== AppState.user.id) {
                         window.engine.executeRemoteDraw(data.payload);
                     }
@@ -629,7 +664,7 @@
                         window.engine.triggerCorrectGuessEffect();
                     }
                     if (data.type === 'clear' && message.clientId !== AppState.user.id) {
-                        window.engine.executeDrawAction(0,0,'#fff',1,'clear',false);
+                        window.engine.executeDrawAction(0,0,'#fff',1,'clear',false, true);
                     }
                     if (data.type === 'word_pick' && AppState.room.drawerId === AppState.user.id) {
                         UI.showWordSelection(data.payload);
@@ -659,7 +694,14 @@
             syncPresence: () => {
                 Network.channel.presence.get((err, members) => {
                     if (err) return;
-                    AppState.room.players = members.map(m => m.data);
+                    
+                    const currentPlayers = [...AppState.room.players];
+                    AppState.room.players = members.map(m => {
+                        const existing = currentPlayers.find(p => p.id === m.data.id);
+                        if (existing) return { ...m.data, score: existing.score, hasGuessed: existing.hasGuessed };
+                        return m.data;
+                    });
+                    
                     UI.updatePlayerList();
 
                     if (members.length > 0) {
@@ -687,8 +729,9 @@
             }
         };
 
+        window.gameTimer = null;
+
         const GameServer = {
-            timerInterval: null, 
             drawerIndex: -1,
             
             startRound: () => {
@@ -717,7 +760,7 @@
                 AppState.room.drawerId = drawer.id;
                 AppState.room.state = 'SELECTING';
                 
-                window.engine.executeDrawAction(0,0,'#fff',1,'clear',false);
+                window.engine.executeDrawAction(0,0,'#fff',1,'clear',false, true);
                 Network.emit({type: 'clear'});
                 Network.emit({type: 'sync-state', payload: AppState.room});
 
@@ -733,20 +776,16 @@
             handleWordSelect: (word) => {
                 if (!AppState.isHost) return;
                 
-                // 1. Clear any old timers first to prevent instant skipping
-                clearInterval(GameServer.timerInterval);
+                if (window.gameTimer) clearInterval(window.gameTimer);
                 
-                // 2. Set the new state
                 AppState.room.currentWord = word;
                 AppState.room.wordLength = word.length;
                 AppState.room.state = 'DRAWING';
-                AppState.room.timeRemaining = 80; // Reset time locally
+                AppState.room.timeRemaining = 40; 
                 
-                // 3. Sync the room state to everyone BEFORE starting the new interval
                 Network.emit({type: 'sync-state', payload: AppState.room});
                 
-                // 4. Start the fresh timer
-                GameServer.startTimer(80);
+                GameServer.startTimer(40);
             },
 
             handleChat: (payload) => {
@@ -768,13 +807,11 @@
                         GameServer.checkRoundEnd();
                         return;
                     } else if (payload.text.length === AppState.room.currentWord.length && payload.text[0].toLowerCase() === AppState.room.currentWord[0].toLowerCase()) {
-                        // For a real game, you would direct message the user, but broadcasting 'close' is acceptable for this prototype
                         Network.emit({type: 'chat', payload: {type: 'close', text: `'${payload.text}' is close!`}});
                     }
                 }
                 
                 if (AppState.room.drawerId === player.id && AppState.room.state === 'DRAWING') {
-                     // Normally direct message, broadcast for prototype
                      Network.emit({type: 'chat', payload: {type: 'system', text: `${player.name} tried to chat while drawing!`}});
                      return;
                 }
@@ -782,19 +819,24 @@
                 Network.emit({type: 'chat', payload: {type: 'standard', sender: player.name, text: payload.text}});
             },
 
-           startTimer: (seconds) => {
+            startTimer: (seconds) => {
                 if (!AppState.isHost) return;
-                clearInterval(GameServer.timerInterval);
-                AppState.room.timeRemaining = seconds;
-                const total = seconds;
+                if (window.gameTimer) clearInterval(window.gameTimer);
                 
-                GameServer.timerInterval = setInterval(() => {
-                    if (!AppState.isHost) { clearInterval(GameServer.timerInterval); return; }
+                AppState.room.timeRemaining = Number(seconds);
+                const total = Number(seconds);
+                
+                window.gameTimer = setInterval(() => {
+                    if (!AppState.isHost || AppState.room.state !== 'DRAWING') { 
+                        clearInterval(window.gameTimer); 
+                        return; 
+                    }
+                    
                     AppState.room.timeRemaining--;
                     Network.emit({type: 'timer', payload: {sec: AppState.room.timeRemaining, total}});
                     
                     if(AppState.room.timeRemaining <= 0) {
-                        clearInterval(GameServer.timerInterval);
+                        clearInterval(window.gameTimer);
                         GameServer.endRound();
                     }
                 }, 1000);
@@ -809,7 +851,7 @@
 
             endRound: () => {
                 if (!AppState.isHost) return;
-                clearInterval(GameServer.timerInterval);
+                if (window.gameTimer) clearInterval(window.gameTimer);
                 AppState.room.state = 'WAITING';
                 let msg = AppState.room.players.length < 2 ? "Not enough players." : `Round over! The word was: ${AppState.room.currentWord}`;
                 Network.emit({type: 'chat', payload: {type: 'system', text: msg}});
