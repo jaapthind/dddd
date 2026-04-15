@@ -499,9 +499,9 @@
                 requestAnimationFrame(this.animate.bind(this));
                 TWEEN.update(time);
                 const now = Date.now();
-                this.boardGroup.position.y = Math.sin(now * 0.001) * 0.5;
-                this.boardGroup.rotation.y = Math.sin(now * 0.0005) * 0.05;
-                this.floatingObjects.forEach(obj => {
+                //this.boardGroup.position.y = Math.sin(now * 0.001) * 0.5;
+                //this.boardGroup.rotation.y = Math.sin(now * 0.0005) * 0.05;
+                this.floatin/gObjects.forEach(obj => {
                     obj.mesh.rotation.x += obj.speed; obj.mesh.rotation.y += obj.speed;
                     obj.mesh.position.y = obj.baseY + Math.sin(now * obj.floatSpeed) * 2;
                 });
