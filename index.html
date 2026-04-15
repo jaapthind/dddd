@@ -126,7 +126,6 @@
             color: var(--text-muted);
         }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { 
@@ -179,428 +178,116 @@
             animation: fadeIn 0.5s ease;
         }
 
-        .lobby-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
+        .lobby-header { text-align: center; margin-bottom: 20px; }
         .lobby-header h1 {
-            font-size: 36px;
-            margin: 0;
+            font-size: 36px; margin: 0;
             background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: 2px;
             text-transform: uppercase;
         }
+        .lobby-header p { color: var(--text-muted); margin: 10px 0 0 0; font-size: 14px; }
 
-        .lobby-header p {
-            color: var(--text-muted);
-            margin: 10px 0 0 0;
-            font-size: 14px;
-        }
-
-        .avatar-selector {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 10px;
-        }
-
+        .avatar-selector { display: flex; justify-content: center; gap: 15px; margin-bottom: 10px; }
         .avatar-option {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            border: 2px solid var(--glass-border);
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
+            width: 50px; height: 50px; border-radius: 12px;
+            border: 2px solid var(--glass-border); cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center; font-size: 24px;
             background: rgba(0,0,0,0.3);
         }
-
         .avatar-option.selected {
             border-color: var(--accent-primary);
-            box-shadow: 0 0 15px rgba(0, 254, 186, 0.4);
-            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(0, 254, 186, 0.4); transform: scale(1.1);
         }
 
         /* ==========================================================================
            GAME VIEW UI COMPONENTS
            ========================================================================== */
-        /* Top HUD */
         .hud-top {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            max-width: 1000px;
-            height: 70px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 30px;
+            position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+            width: 80%; max-width: 1000px; height: 70px; display: flex;
+            justify-content: space-between; align-items: center; padding: 0 30px;
         }
-
-        .hud-round-info {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
+        .hud-round-info { display: flex; flex-direction: column; align-items: flex-start; }
         .round-text { font-size: 18px; font-weight: bold; color: var(--accent-primary); }
         .drawer-text { font-size: 12px; color: var(--text-muted); }
-
-        .hud-word-area {
-            flex-grow: 1;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .word-display {
-            font-size: 32px;
-            font-weight: 800;
-            letter-spacing: 8px;
-            text-shadow: 0 0 10px rgba(255,255,255,0.3);
-            font-family: monospace;
-        }
-
-        .word-hint {
-            font-size: 12px;
-            color: var(--text-muted);
-            letter-spacing: 1px;
-            margin-top: 4px;
-        }
-
-        .hud-timer-area {
-            position: relative;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .timer-text {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--text-main);
-            z-index: 2;
-        }
-
-        svg.timer-ring {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            transform: rotate(-90deg);
-        }
-
-        svg.timer-ring circle {
-            fill: transparent;
-            stroke-width: 4;
-            stroke-linecap: round;
-        }
-
+        .hud-word-area { flex-grow: 1; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .word-display { font-size: 32px; font-weight: 800; letter-spacing: 8px; text-shadow: 0 0 10px rgba(255,255,255,0.3); font-family: monospace; }
+        .word-hint { font-size: 12px; color: var(--text-muted); letter-spacing: 1px; margin-top: 4px; }
+        .hud-timer-area { position: relative; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; }
+        .timer-text { font-size: 24px; font-weight: bold; color: var(--text-main); z-index: 2; }
+        svg.timer-ring { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+        svg.timer-ring circle { fill: transparent; stroke-width: 4; stroke-linecap: round; }
         .timer-ring-bg { stroke: var(--glass-border); }
-        .timer-ring-progress {
-            stroke: var(--accent-primary);
-            stroke-dasharray: 140;
-            stroke-dashoffset: 0;
-            transition: stroke-dashoffset 1s linear, stroke 0.3s;
-        }
+        .timer-ring-progress { stroke: var(--accent-primary); stroke-dasharray: 140; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear, stroke 0.3s; }
 
-        /* Player List Sidebar */
-        .sidebar-left {
-            position: absolute;
-            top: 110px;
-            left: 20px;
-            width: 250px;
-            height: calc(100vh - 140px);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .player-list-header {
-            padding: 15px;
-            border-bottom: 1px solid var(--glass-border);
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .player-list-content {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .player-card {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 12px;
-            border: 1px solid transparent;
-            transition: all 0.2s;
-        }
-
+        .sidebar-left { position: absolute; top: 110px; left: 20px; width: 250px; height: calc(100vh - 140px); display: flex; flex-direction: column; }
+        .player-list-header { padding: 15px; border-bottom: 1px solid var(--glass-border); font-weight: bold; display: flex; justify-content: space-between; }
+        .player-list-content { flex-grow: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .player-card { display: flex; align-items: center; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid transparent; transition: all 0.2s; }
         .player-card.is-me { border-color: rgba(255,255,255,0.2); }
         .player-card.is-drawer { border-color: var(--warning); background: rgba(255, 165, 2, 0.1); }
         .player-card.has-guessed { border-color: var(--success); background: rgba(46, 213, 115, 0.1); }
-
         .player-rank { font-size: 14px; font-weight: bold; color: var(--text-muted); width: 20px; }
         .player-avatar { font-size: 20px; margin: 0 10px; }
         .player-info { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden;}
         .player-name { font-size: 14px; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
         .player-score { font-size: 12px; color: var(--accent-primary); font-family: monospace;}
 
-        /* Chat Sidebar */
-        .sidebar-right {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            width: 320px;
-            height: 60vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chat-messages {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            scroll-behavior: smooth;
-        }
-
-        .chat-msg {
-            padding: 8px 12px;
-            border-radius: 12px;
-            font-size: 14px;
-            line-height: 1.4;
-            animation: slideInRight 0.2s ease-out;
-            word-wrap: break-word;
-        }
-
+        .sidebar-right { position: absolute; bottom: 20px; right: 20px; width: 320px; height: 60vh; display: flex; flex-direction: column; }
+        .chat-messages { flex-grow: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
+        .chat-msg { padding: 8px 12px; border-radius: 12px; font-size: 14px; line-height: 1.4; animation: slideInRight 0.2s ease-out; word-wrap: break-word; }
         .chat-msg.standard { background: rgba(0,0,0,0.3); border-left: 3px solid var(--text-muted); }
         .chat-msg.standard .sender { font-weight: bold; color: var(--text-muted); margin-right: 5px; }
-        
         .chat-msg.system { background: transparent; color: var(--warning); font-style: italic; text-align: center; font-size: 13px;}
-        
-        .chat-msg.correct { 
-            background: rgba(46, 213, 115, 0.15); 
-            border: 1px solid var(--success); 
-            color: var(--success);
-            font-weight: bold;
-        }
-
-        .chat-msg.close {
-            background: rgba(255, 165, 2, 0.15);
-            border: 1px solid var(--warning);
-            color: var(--warning);
-        }
-
-        .chat-input-area {
-            padding: 15px;
-            border-top: 1px solid var(--glass-border);
-            display: flex;
-            gap: 10px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 0 0 24px 24px;
-        }
-
-        .chat-input-area input {
-            flex-grow: 1;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--glass-border);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 20px;
-            outline: none;
-            font-size: 14px;
-        }
+        .chat-msg.correct { background: rgba(46, 213, 115, 0.15); border: 1px solid var(--success); color: var(--success); font-weight: bold; }
+        .chat-msg.close { background: rgba(255, 165, 2, 0.15); border: 1px solid var(--warning); color: var(--warning); }
+        .chat-input-area { padding: 15px; border-top: 1px solid var(--glass-border); display: flex; gap: 10px; background: rgba(0,0,0,0.2); border-radius: 0 0 24px 24px; }
+        .chat-input-area input { flex-grow: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white; padding: 10px 15px; border-radius: 20px; outline: none; font-size: 14px; }
         .chat-input-area input:focus { border-color: var(--accent-primary); }
 
-        /* Tools Palette */
-        .tools-palette {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 15px 25px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .tools-palette.hidden {
-            transform: translate(-50%, 150%);
-        }
-
-        .tool-section {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .tool-divider {
-            width: 1px;
-            height: 30px;
-            background: var(--glass-border);
-        }
-
-        .color-grid {
-            display: grid;
-            grid-template-columns: repeat(11, 1fr);
-            gap: 6px;
-        }
-
-        .color-swatch {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2);
-            transition: transform 0.1s;
-        }
-
+        .tools-palette { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 15px 25px; display: flex; align-items: center; gap: 20px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .tools-palette.hidden { transform: translate(-50%, 150%); }
+        .tool-section { display: flex; align-items: center; gap: 10px; }
+        .tool-divider { width: 1px; height: 30px; background: var(--glass-border); }
+        .color-grid { display: grid; grid-template-columns: repeat(11, 1fr); gap: 6px; }
+        .color-swatch { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2); transition: transform 0.1s; }
         .color-swatch:hover { transform: scale(1.2); }
         .color-swatch.active { border-color: white; transform: scale(1.1); box-shadow: 0 0 10px currentColor; }
-
-        .tool-btn {
-            width: 40px; height: 40px;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid var(--glass-border);
-            color: white;
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 18px;
-        }
-
+        .tool-btn { width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); color: white; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s; font-size: 18px; }
         .tool-btn:hover { background: rgba(255,255,255,0.2); }
         .tool-btn.active { background: rgba(0, 254, 186, 0.3); border-color: var(--accent-primary); }
+        .brush-size-container { display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 12px; }
+        input[type="range"] { -webkit-appearance: none; width: 100px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; outline: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--accent-primary); cursor: pointer; box-shadow: 0 0 10px var(--accent-primary); }
 
-        .brush-size-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--text-muted);
-            font-size: 12px;
-        }
-
-        input[type="range"] {
-            -webkit-appearance: none;
-            width: 100px;
-            height: 4px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 2px;
-            outline: none;
-        }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 16px; height: 16px;
-            border-radius: 50%;
-            background: var(--accent-primary);
-            cursor: pointer;
-            box-shadow: 0 0 10px var(--accent-primary);
-        }
-
-        /* Overlay Systems (Word Pick, Post Round) */
-        .overlay-screen {
-            position: absolute;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(5px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 90;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-
-        .overlay-screen.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .word-pick-container {
-            width: 600px;
-            padding: 40px;
-            text-align: center;
-        }
-
+        .overlay-screen { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 90; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .overlay-screen.active { opacity: 1; pointer-events: auto; }
+        .word-pick-container { width: 600px; padding: 40px; text-align: center; }
         .word-pick-container h2 { margin-top: 0; color: var(--accent-primary); }
-        
-        .word-options {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
-        }
+        .word-options { display: flex; justify-content: center; gap: 20px; margin-top: 30px; }
+        .word-option-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); padding: 20px 30px; border-radius: 16px; font-size: 20px; font-weight: bold; color: white; cursor: pointer; transition: all 0.2s; flex: 1; }
+        .word-option-btn:hover { background: rgba(255,255,255,0.15); border-color: white; transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
 
-        .word-option-btn {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--glass-border);
-            padding: 20px 30px;
-            border-radius: 16px;
-            font-size: 20px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-            transition: all 0.2s;
-            flex: 1;
-        }
-
-        .word-option-btn:hover {
-            background: rgba(255,255,255,0.15);
-            border-color: white;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-        }
-
-        /* Animations */
         @keyframes fadeIn { from { opacity: 0; transform: translate(-50%, -45%); } to { opacity: 1; transform: translate(-50%, -50%); } }
         @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-        
-        #loading-indicator {
-            position: absolute; top: 10px; left: 10px; font-family: monospace; font-size: 12px; color: var(--accent-primary); z-index: 999;
-        }
-
+        #loading-indicator { position: absolute; top: 10px; left: 10px; font-family: monospace; font-size: 12px; color: var(--accent-primary); z-index: 999; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
 </head>
 <body>
 
     <div id="loading-indicator">INIT_WEBGL_CONTEXT...</div>
-
     <div id="webgl-container"></div>
 
     <div id="view-lobby" class="view-state active">
         <div class="glass-panel lobby-container">
             <div class="lobby-header">
                 <h1>3D Skribbl</h1>
-                <p>LIQUID GLASS ENGINE v2.5.4</p>
+                <p>LIQUID GLASS ENGINE v2.5.5</p>
             </div>
-            
             <div>
                 <label style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px; display: block;">SELECT AVATAR</label>
                 <div class="avatar-selector" id="avatar-selector">
@@ -611,28 +298,23 @@
                     <div class="avatar-option" data-avatar="🤖">🤖</div>
                 </div>
             </div>
-
             <div>
                 <input type="text" id="username-input" class="glass-input" placeholder="Enter Username (Max 12 chars)" maxlength="12" autocomplete="off" spellcheck="false">
             </div>
-
             <button id="btn-join-game" class="glass-button" style="margin-top: 10px; padding: 16px;">CONNECT TO GLOBAL SERVER</button>
         </div>
     </div>
 
     <div id="view-game" class="view-state">
-        
         <div class="glass-panel hud-top interactive-layer">
             <div class="hud-round-info">
                 <span class="round-text" id="ui-round-text">Round 1/3</span>
-                <span class="drawer-text" id="ui-drawer-text">Waiting for players...</span>
+                <span class="drawer-text" id="ui-drawer-text">Connecting...</span>
             </div>
-            
             <div class="hud-word-area">
                 <div class="word-display" id="ui-word-display">W A I T I N G</div>
                 <div class="word-hint" id="ui-word-hint">Need at least 2 players to start</div>
             </div>
-
             <div class="hud-timer-area">
                 <svg class="timer-ring">
                     <circle class="timer-ring-bg" cx="25" cy="25" r="22"></circle>
@@ -647,14 +329,12 @@
                 <span>PLAYERS</span>
                 <span id="ui-player-count">0/20</span>
             </div>
-            <div class="player-list-content" id="ui-player-list">
-                </div>
+            <div class="player-list-content" id="ui-player-list"></div>
         </div>
 
         <div class="glass-panel sidebar-right interactive-layer">
             <div class="chat-messages" id="ui-chat-messages">
-                <div class="chat-msg system">Connected to local client simulation.</div>
-                <div class="chat-msg system">Waiting for server sync...</div>
+                <div class="chat-msg system">Connecting to networking...</div>
             </div>
             <div class="chat-input-area">
                 <input type="text" id="chat-input" placeholder="Type your guess here..." autocomplete="off" disabled>
@@ -662,25 +342,19 @@
         </div>
 
         <div class="glass-panel tools-palette interactive-layer hidden" id="ui-tools-palette">
-            
             <div class="tool-section">
                 <div class="tool-btn active" id="tool-brush" title="Brush">🖌️</div>
                 <div class="tool-btn" id="tool-fill" title="Fill Bucket">🪣</div>
                 <div class="tool-btn" id="tool-erase" title="Eraser">🧹</div>
                 <div class="tool-btn" id="tool-clear" title="Clear Canvas">🗑️</div>
             </div>
-
             <div class="tool-divider"></div>
-
             <div class="tool-section brush-size-container">
                 <span>SIZE</span>
                 <input type="range" id="ui-brush-size" min="1" max="50" value="5">
             </div>
-
             <div class="tool-divider"></div>
-
-            <div class="tool-section color-grid" id="ui-color-grid">
-                </div>
+            <div class="tool-section color-grid" id="ui-color-grid"></div>
         </div>
     </div>
 
@@ -688,142 +362,57 @@
         <div class="glass-panel word-pick-container interactive-layer">
             <h2>YOUR TURN TO DRAW!</h2>
             <p style="color: var(--text-muted)">Choose a word quickly:</p>
-            <div class="word-options" id="ui-word-options">
-                <div class="word-option-btn">WORD 1</div>
-                <div class="word-option-btn">WORD 2</div>
-                <div class="word-option-btn">WORD 3</div>
-            </div>
+            <div class="word-options" id="ui-word-options"></div>
         </div>
     </div>
 
-
     <script>
-        /**
-         * ============================================================================
-         * 3D SKRIBBL CLIENT APPLICATION CORE
-         * Architecture: 
-         * 1. Constants & Config
-         * 2. State Management
-         * 3. Utility Functions
-         * 4. Three.js Engine (Canvas 3D Mapping, Raycasting, Drawing Logic)
-         * 5. UI Controller (DOM Manipulation)
-         * 6. Network Controller (Socket.io Handlers)
-         * 7. Offline/Simulation Fallback (Since Server is external)
-         * ============================================================================
-         */
-
-        // --- 1. CONSTANTS & CONFIG ---
         const CONFIG = {
-            MAX_PLAYERS: 20,
-            CANVAS_WIDTH: 1024,
-            CANVAS_HEIGHT: 512,
-            COLORS: [
-                '#000000', '#ffffff', '#c1c1c1', '#ef130b', '#740b07', 
-                '#ff7100', '#c23800', '#ffe400', '#e8a200', '#00cc00', 
-                '#005510', '#00b2ff', '#00569e', '#231fd3', '#0f0d6b',
-                '#a300ba', '#550069', '#d37caa', '#a75574', '#a0522d',
-                '#ff4757', '#2ed573' // Extra Liquid Glass Theme Colors
-            ],
-            WORD_BANK: [
-                "Apple", "Ant", "Airplane", "Anchor", "Angel", "Arm", "Axe", "Baby", "Ball", "Balloon", "Banana", "Bank", "Baseball", "Basket", "Bat", "Bath", "Beach", "Bear", "Beard", "Bed", "Bee", "Bell", "Belt", "Bench", "Bird", "Birthday", "Boat", "Book", "Boot", "Bottle", "Bowl", "Box", "Boy", "Brain", "Bridge", "Brush", "Bucket", "Bus", "Butterfly", "Button", "Cake", "Camera", "Candle", "Candy", "Car", "Carrot", "Castle", "Cat", "Chair", "Cheese", "Cherry", "Chess", "Chicken", "Church", "Circle", "Clock", "Cloud", "Coat", "Coffee", "Comb", "Computer", "Cookie", "Corn", "Cow", "Crab", "Crayon", "Crown", "Cup", "Desk", "Diamond", "Dinosaur", "Dog", "Doll", "Dolphin", "Door", "Dragon", "Drum", "Duck", "Ear", "Earth", "Egg", "Elephant", "Eye", "Face", "Fan", "Feather", "Fence", "Finger", "Fire", "Fish", "Flag", "Flower", "Flute", "Fly", "Foot", "Fork", "Frog", "Gate", "Ghost", "Giraffe", "Glass", "Glove", "Goat", "Gold", "Grapes", "Grass", "Guitar", "Hammer", "Hand", "Harp", "Hat", "Heart", "Helicopter", "Hippo", "Horse", "Hospital", "House", "Ice", "Igloo", "Island", "Jacket", "Jar", "Jellyfish", "Jet", "Key", "King", "Kite", "Knife", "Ladder", "Lamp", "Leaf", "Leg", "Lemon", "Light", "Lion", "Lips", "Lizard", "Lock", "Lollipop", "Magnet", "Map", "Mask", "Milk", "Money", "Monkey", "Moon", "Mountain", "Mouse", "Mouth", "Mushroom", "Nail", "Neck", "Needle", "Nest", "Nose", "Notebook", "Ocean", "Octopus", "Orange", "Owl", "Paint", "Pants", "Paper", "Parrot", "Pencil", "Penguin", "Piano", "Picture", "Pie", "Pig", "Pillow", "Pizza", "Plane", "Plant", "Pocket", "Pot", "Potato", "Pumpkin", "Puppy", "Pyramid", "Queen", "Rabbit", "Radio", "Rain", "Rainbow", "Rake", "Rat", "Ring", "River", "Robot", "Rocket", "Rock", "Roof", "Rope", "Rose", "Sailboat", "Sandwich", "School", "Scissors", "Scorpion", "Shark", "Sheep", "Ship", "Shirt", "Shoe", "Skateboard", "Skeleton", "Snake", "Snowman", "Soap", "Sock", "Sofa", "Spider", "Spoon", "Star", "Sun", "Table", "Teapot", "Telephone", "Television", "Tent", "Tiger", "Toaster", "Tomato", "Tooth", "Torch", "Train", "Tree", "Truck", "Turtle", "Umbrella", "Violin", "Volcano", "Watch", "Water", "Whale", "Wheel", "Window", "Wolf", "Worm", "Zebra", "Zipper"
-            ]
+            MAX_PLAYERS: 20, CANVAS_WIDTH: 1024, CANVAS_HEIGHT: 512,
+            COLORS: ['#000000', '#ffffff', '#c1c1c1', '#ef130b', '#740b07', '#ff7100', '#c23800', '#ffe400', '#e8a200', '#00cc00', '#005510', '#00b2ff', '#00569e', '#231fd3', '#0f0d6b', '#a300ba', '#550069', '#d37caa', '#a75574', '#a0522d', '#ff4757', '#2ed573'],
+            WORD_BANK: ["Apple", "Ant", "Airplane", "Anchor", "Angel", "Arm", "Axe", "Baby", "Ball", "Balloon", "Banana", "Bank", "Baseball", "Basket", "Bat", "Bath", "Beach", "Bear", "Beard", "Bed", "Bee", "Bell", "Belt", "Bench", "Bird", "Birthday", "Boat", "Book", "Boot", "Bottle", "Bowl", "Box", "Boy", "Brain", "Bridge", "Brush", "Bucket", "Bus", "Butterfly", "Button", "Cake", "Camera", "Candle", "Candy", "Car", "Carrot", "Castle", "Cat", "Chair", "Cheese", "Cherry", "Chess", "Chicken", "Church", "Circle", "Clock", "Cloud", "Coat", "Coffee", "Comb", "Computer", "Cookie", "Corn", "Cow", "Crab", "Crayon", "Crown", "Cup", "Desk", "Diamond", "Dinosaur", "Dog", "Doll", "Dolphin", "Door", "Dragon", "Drum", "Duck", "Ear", "Earth", "Egg", "Elephant", "Eye", "Face", "Fan", "Feather", "Fence", "Finger", "Fire", "Fish", "Flag", "Flower", "Flute", "Fly", "Foot", "Fork", "Frog", "Gate", "Ghost", "Giraffe", "Glass", "Glove", "Goat", "Gold", "Grapes", "Grass", "Guitar", "Hammer", "Hand", "Harp", "Hat", "Heart", "Helicopter", "Hippo", "Horse", "Hospital", "House", "Ice", "Igloo", "Island", "Jacket", "Jar", "Jellyfish", "Jet", "Key", "King", "Kite", "Knife", "Ladder", "Lamp", "Leaf", "Leg", "Lemon", "Light", "Lion", "Lips", "Lizard", "Lock", "Lollipop", "Magnet", "Map", "Mask", "Milk", "Money", "Monkey", "Moon", "Mountain", "Mouse", "Mouth", "Mushroom", "Nail", "Neck", "Needle", "Nest", "Nose", "Notebook", "Ocean", "Octopus", "Orange", "Owl", "Paint", "Pants", "Paper", "Parrot", "Pencil", "Penguin", "Piano", "Picture", "Pie", "Pig", "Pillow", "Pizza", "Plane", "Plant", "Pocket", "Pot", "Potato", "Pumpkin", "Puppy", "Pyramid", "Queen", "Rabbit", "Radio", "Rain", "Rainbow", "Rake", "Rat", "Ring", "River", "Robot", "Rocket", "Rock", "Roof", "Rope", "Rose", "Sailboat", "Sandwich", "School", "Scissors", "Scorpion", "Shark", "Sheep", "Ship", "Shirt", "Shoe", "Skateboard", "Skeleton", "Snake", "Snowman", "Soap", "Sock", "Sofa", "Spider", "Spoon", "Star", "Sun", "Table", "Teapot", "Telephone", "Television", "Tent", "Tiger", "Toaster", "Tomato", "Tooth", "Torch", "Train", "Tree", "Truck", "Turtle", "Umbrella", "Violin", "Volcano", "Watch", "Water", "Whale", "Wheel", "Window", "Wolf", "Worm", "Zebra", "Zipper"]
         };
 
-        // --- 2. STATE MANAGEMENT ---
         const AppState = {
-            user: {
-                id: null,
-                name: '',
-                avatar: '🧊',
-                score: 0
-            },
-            room: {
-                players: [],
-                round: 0,
-                maxRounds: 3,
-                state: 'LOBBY', // LOBBY, WAITING, SELECTING, DRAWING, ROUND_END, GAME_END
-                drawerId: null,
-                currentWord: '',
-                wordLength: 0,
-                timeRemaining: 0
-            },
-            drawing: {
-                color: '#000000',
-                size: 5,
-                tool: 'brush', // brush, fill, erase
-                isDrawing: false,
-                lastX: 0,
-                lastY: 0
-            },
-            network: {
-                connected: false,
-                isSimulated: true // True until real socket connects
-            }
+            user: { id: null, name: '', avatar: '🧊', score: 0, hasGuessed: false },
+            room: { players: [], round: 0, maxRounds: 3, state: 'WAITING', drawerId: null, currentWord: '', wordLength: 0, timeRemaining: 0 },
+            drawing: { color: '#000000', size: 5, tool: 'brush', isDrawing: false, lastX: 0, lastY: 0 }
         };
 
-        // --- 3. UTILITY FUNCTIONS ---
         const Utils = {
             generateId: () => '_' + Math.random().toString(36).substr(2, 9),
-            lerp: (start, end, amt) => (1 - amt) * start + amt * end,
             hexToRgb: (hex) => {
                 let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
                 return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : null;
             },
             floodFill: (ctx, x, y, fillColor) => {
-                // Complex Flood Fill Algorithm for HTML5 Canvas 2D context (used as texture)
                 const imageData = ctx.getImageData(0, 0, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT);
-                const data = imageData.data;
-                const width = imageData.width;
-                const height = imageData.height;
+                const data = imageData.data; const width = imageData.width; const height = imageData.height;
                 const stack = [[x, y]];
-                
                 const getPixelOffset = (x, y) => (y * width + x) * 4;
                 const offset = getPixelOffset(x, y);
-                
-                const startR = data[offset];
-                const startG = data[offset+1];
-                const startB = data[offset+2];
-                const startA = data[offset+3];
-
+                const startR = data[offset]; const startG = data[offset+1]; const startB = data[offset+2]; const startA = data[offset+3];
                 const fillRgb = Utils.hexToRgb(fillColor);
-                if(!fillRgb) return;
+                if(!fillRgb || (startR === fillRgb.r && startG === fillRgb.g && startB === fillRgb.b)) return;
 
-                if (startR === fillRgb.r && startG === fillRgb.g && startB === fillRgb.b) return;
-
-                const matchStartColor = (pos) => {
-                    return data[pos] === startR && data[pos+1] === startG && data[pos+2] === startB && data[pos+3] === startA;
-                };
-
-                const colorPixel = (pos) => {
-                    data[pos] = fillRgb.r; data[pos+1] = fillRgb.g; data[pos+2] = fillRgb.b; data[pos+3] = 255;
-                };
+                const matchStartColor = (pos) => data[pos] === startR && data[pos+1] === startG && data[pos+2] === startB && data[pos+3] === startA;
+                const colorPixel = (pos) => { data[pos] = fillRgb.r; data[pos+1] = fillRgb.g; data[pos+2] = fillRgb.b; data[pos+3] = 255; };
 
                 while (stack.length) {
-                    let newPos, nx, ny, pixelPos, reachLeft, reachRight;
-                    newPos = stack.pop();
-                    nx = newPos[0];
-                    ny = newPos[1];
-                    pixelPos = getPixelOffset(nx, ny);
-
-                    while (ny-- >= 0 && matchStartColor(pixelPos)) {
-                        pixelPos -= width * 4;
-                    }
-                    pixelPos += width * 4;
-                    ++ny;
-                    reachLeft = false;
-                    reachRight = false;
-
+                    let newPos = stack.pop(); let nx = newPos[0]; let ny = newPos[1];
+                    let pixelPos = getPixelOffset(nx, ny);
+                    while (ny-- >= 0 && matchStartColor(pixelPos)) pixelPos -= width * 4;
+                    pixelPos += width * 4; ++ny;
+                    let reachLeft = false; let reachRight = false;
                     while (ny++ < height - 1 && matchStartColor(pixelPos)) {
                         colorPixel(pixelPos);
                         if (nx > 0) {
-                            if (matchStartColor(pixelPos - 4)) {
-                                if (!reachLeft) { stack.push([nx - 1, ny]); reachLeft = true; }
-                            } else if (reachLeft) { reachLeft = false; }
+                            if (matchStartColor(pixelPos - 4)) { if (!reachLeft) { stack.push([nx - 1, ny]); reachLeft = true; } } 
+                            else if (reachLeft) { reachLeft = false; }
                         }
                         if (nx < width - 1) {
-                            if (matchStartColor(pixelPos + 4)) {
-                                if (!reachRight) { stack.push([nx + 1, ny]); reachRight = true; }
-                            } else if (reachRight) { reachRight = false; }
+                            if (matchStartColor(pixelPos + 4)) { if (!reachRight) { stack.push([nx + 1, ny]); reachRight = true; } } 
+                            else if (reachRight) { reachRight = false; }
                         }
                         pixelPos += width * 4;
                     }
@@ -832,21 +421,18 @@
             }
         };
 
-        // --- 4. THREE.JS ENGINE ---
         class Engine3D {
             constructor() {
                 this.container = document.getElementById('webgl-container');
                 this.scene = new THREE.Scene();
-                // Deep dark blue background to match UI
                 this.scene.background = new THREE.Color(0x070b14);
                 this.scene.fog = new THREE.FogExp2(0x070b14, 0.02);
-
                 this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
                 this.camera.position.set(0, 0, 20);
 
                 this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
                 this.renderer.setSize(window.innerWidth, window.innerHeight);
-                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // optimize
+                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
                 this.renderer.shadowMap.enabled = true;
                 this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
                 this.container.appendChild(this.renderer.domElement);
@@ -854,7 +440,6 @@
                 this.raycaster = new THREE.Raycaster();
                 this.mouse = new THREE.Vector2();
 
-                // 2D Canvas for Texture (The actual drawing surface)
                 this.drawCanvas = document.createElement('canvas');
                 this.drawCanvas.width = CONFIG.CANVAS_WIDTH;
                 this.drawCanvas.height = CONFIG.CANVAS_HEIGHT;
@@ -863,6 +448,7 @@
                 this.drawCtx.fillRect(0, 0, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT);
 
                 this.canvasTexture = new THREE.CanvasTexture(this.drawCanvas);
+                this.canvasTexture.generateMipmaps = false; 
                 this.canvasTexture.minFilter = THREE.LinearFilter;
                 this.canvasTexture.magFilter = THREE.LinearFilter;
 
@@ -870,138 +456,66 @@
                 this.setupEnvironment();
                 this.setupDrawingBoard();
 
-                // Events
                 window.addEventListener('resize', this.onWindowResize.bind(this));
                 this.renderer.domElement.addEventListener('mousedown', this.onPointerDown.bind(this));
                 this.renderer.domElement.addEventListener('mousemove', this.onPointerMove.bind(this));
                 window.addEventListener('mouseup', this.onPointerUp.bind(this));
-                // Touch support
                 this.renderer.domElement.addEventListener('touchstart', this.onTouchDown.bind(this), {passive: false});
                 this.renderer.domElement.addEventListener('touchmove', this.onTouchMove.bind(this), {passive: false});
                 window.addEventListener('touchend', this.onPointerUp.bind(this));
 
                 this.clock = new THREE.Clock();
                 this.animate();
-                
                 document.getElementById('loading-indicator').style.display = 'none';
             }
 
             setupLighting() {
-                const ambient = new THREE.AmbientLight(0xffffff, 0.4);
-                this.scene.add(ambient);
-
+                this.scene.add(new THREE.AmbientLight(0xffffff, 0.4));
                 const spotLight = new THREE.SpotLight(0xffffff, 1.2);
                 spotLight.position.set(0, 20, 30);
-                spotLight.angle = Math.PI / 4;
-                spotLight.penumbra = 0.5;
-                spotLight.castShadow = true;
-                spotLight.shadow.mapSize.width = 2048;
-                spotLight.shadow.mapSize.height = 2048;
+                spotLight.angle = Math.PI / 4; spotLight.penumbra = 0.5; spotLight.castShadow = true;
                 this.scene.add(spotLight);
-
-                // Add some colored rim lights for the liquid glass feel
-                const rimLight1 = new THREE.PointLight(0x00feba, 2, 50);
-                rimLight1.position.set(-15, -10, -10);
-                this.scene.add(rimLight1);
-
-                const rimLight2 = new THREE.PointLight(0x5b54fa, 2, 50);
-                rimLight2.position.set(15, 10, -10);
-                this.scene.add(rimLight2);
+                const rimLight1 = new THREE.PointLight(0x00feba, 2, 50); rimLight1.position.set(-15, -10, -10); this.scene.add(rimLight1);
+                const rimLight2 = new THREE.PointLight(0x5b54fa, 2, 50); rimLight2.position.set(15, 10, -10); this.scene.add(rimLight2);
             }
 
             setupEnvironment() {
-                // Floating geometric particles in the background
                 const geoGroup = new THREE.Group();
-                const geometries = [
-                    new THREE.IcosahedronGeometry(0.5, 0),
-                    new THREE.OctahedronGeometry(0.5, 0),
-                    new THREE.TetrahedronGeometry(0.5, 0)
-                ];
-                const material = new THREE.MeshPhysicalMaterial({
-                    color: 0xffffff,
-                    metalness: 0.1,
-                    roughness: 0.1,
-                    transmission: 0.9, // glass effect
-                    thickness: 0.5,
-                    ior: 1.5
-                });
-
+                const geometries = [new THREE.IcosahedronGeometry(0.5, 0), new THREE.OctahedronGeometry(0.5, 0), new THREE.TetrahedronGeometry(0.5, 0)];
+                const material = new THREE.MeshPhysicalMaterial({ color: 0xffffff, metalness: 0.1, roughness: 0.1, transmission: 0.9, thickness: 0.5, ior: 1.5 });
                 this.floatingObjects = [];
                 for(let i=0; i<30; i++) {
                     const mesh = new THREE.Mesh(geometries[Math.floor(Math.random()*geometries.length)], material);
-                    mesh.position.set(
-                        (Math.random() - 0.5) * 60,
-                        (Math.random() - 0.5) * 40,
-                        (Math.random() - 0.5) * 20 - 20
-                    );
+                    mesh.position.set((Math.random() - 0.5) * 60, (Math.random() - 0.5) * 40, (Math.random() - 0.5) * 20 - 20);
                     mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, 0);
-                    
-                    const speed = 0.001 + Math.random() * 0.002;
-                    const floatSpeed = 0.005 + Math.random() * 0.01;
-                    
                     geoGroup.add(mesh);
-                    this.floatingObjects.push({mesh, speed, floatSpeed, baseY: mesh.position.y});
+                    this.floatingObjects.push({mesh, speed: 0.001 + Math.random() * 0.002, floatSpeed: 0.005 + Math.random() * 0.01, baseY: mesh.position.y});
                 }
                 this.scene.add(geoGroup);
             }
 
             setupDrawingBoard() {
                 this.boardGroup = new THREE.Group();
+                const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 2, 10, 8), new THREE.MeshStandardMaterial({color: 0x111111}));
+                stand.position.set(0, -15, -5); stand.castShadow = true; this.boardGroup.add(stand);
 
-                // The physical easel/stand (invisible mostly, but casts shadow)
-                const standGeo = new THREE.CylinderGeometry(0.5, 2, 10, 8);
-                const standMat = new THREE.MeshStandardMaterial({color: 0x111111});
-                const stand = new THREE.Mesh(standGeo, standMat);
-                stand.position.set(0, -15, -5);
-                stand.castShadow = true;
-                this.boardGroup.add(stand);
+                const frame = new THREE.Mesh(new THREE.BoxGeometry(25, 13, 1), new THREE.MeshPhysicalMaterial({ color: 0x222222, metalness: 0.8, roughness: 0.2, clearcoat: 1.0, clearcoatRoughness: 0.1 }));
+                frame.position.z = -0.5; frame.castShadow = true; frame.receiveShadow = true; this.boardGroup.add(frame);
 
-                // The Canvas Board Frame (Glassy)
-                const frameGeo = new THREE.BoxGeometry(25, 13, 1);
-                const frameMat = new THREE.MeshPhysicalMaterial({
-                    color: 0x222222,
-                    metalness: 0.8,
-                    roughness: 0.2,
-                    clearcoat: 1.0,
-                    clearcoatRoughness: 0.1
-                });
-                const frame = new THREE.Mesh(frameGeo, frameMat);
-                frame.position.z = -0.5;
-                frame.castShadow = true;
-                frame.receiveShadow = true;
-                this.boardGroup.add(frame);
-
-                // The Actual Drawing Surface
-                const surfaceGeo = new THREE.PlaneGeometry(24, 12);
-                const surfaceMat = new THREE.MeshBasicMaterial({
-                    map: this.canvasTexture,
-                    side: THREE.DoubleSide
-                });
-                this.drawSurface = new THREE.Mesh(surfaceGeo, surfaceMat);
-                this.drawSurface.receiveShadow = true;
-                this.boardGroup.add(this.drawSurface);
+                this.drawSurface = new THREE.Mesh(new THREE.PlaneGeometry(24, 12), new THREE.MeshBasicMaterial({ map: this.canvasTexture, side: THREE.DoubleSide }));
+                this.drawSurface.position.z = 0.02; // Fixed Z-Fighting Glitch
+                this.drawSurface.receiveShadow = true; this.boardGroup.add(this.drawSurface);
 
                 this.scene.add(this.boardGroup);
-                
-                // Tilt it slightly up
                 this.boardGroup.rotation.x = -0.05;
             }
 
-            // Coordinate mapping: Screen -> World -> 2D Texture
             getTextureCoordinates(clientX, clientY) {
                 this.mouse.x = (clientX / window.innerWidth) * 2 - 1;
                 this.mouse.y = -(clientY / window.innerHeight) * 2 + 1;
-
                 this.raycaster.setFromCamera(this.mouse, this.camera);
                 const intersects = this.raycaster.intersectObject(this.drawSurface);
-
-                if (intersects.length > 0) {
-                    const uv = intersects[0].uv;
-                    return {
-                        x: Math.floor(uv.x * CONFIG.CANVAS_WIDTH),
-                        y: Math.floor((1 - uv.y) * CONFIG.CANVAS_HEIGHT) // Y is inverted in UV
-                    };
-                }
+                if (intersects.length > 0) return { x: Math.floor(intersects[0].uv.x * CONFIG.CANVAS_WIDTH), y: Math.floor((1 - intersects[0].uv.y) * CONFIG.CANVAS_HEIGHT) };
                 return null;
             }
 
@@ -1009,57 +523,32 @@
                 if (tool === 'clear') {
                     this.drawCtx.fillStyle = '#ffffff';
                     this.drawCtx.fillRect(0, 0, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT);
-                    this.canvasTexture.needsUpdate = true;
-                    if(emit && Network.isHost) Network.emitDraw({tool: 'clear'});
-                    return;
+                } else if (tool === 'fill') {
+                    Utils.floodFill(this.drawCtx, x, y, color);
+                } else {
+                    this.drawCtx.lineCap = 'round'; this.drawCtx.lineJoin = 'round';
+                    this.drawCtx.lineWidth = size; this.drawCtx.strokeStyle = tool === 'erase' ? '#ffffff' : color;
+                    if (AppState.drawing.isDrawing) {
+                        this.drawCtx.beginPath();
+                        this.drawCtx.moveTo(AppState.drawing.lastX, AppState.drawing.lastY);
+                        this.drawCtx.lineTo(x, y); this.drawCtx.stroke();
+                    }
+                    AppState.drawing.lastX = x; AppState.drawing.lastY = y;
                 }
-
-                this.drawCtx.lineCap = 'round';
-                this.drawCtx.lineJoin = 'round';
-                this.drawCtx.lineWidth = size;
-                this.drawCtx.strokeStyle = tool === 'erase' ? '#ffffff' : color;
-
-                if (AppState.drawing.isDrawing) {
-                    this.drawCtx.beginPath();
-                    this.drawCtx.moveTo(AppState.drawing.lastX, AppState.drawing.lastY);
-                    this.drawCtx.lineTo(x, y);
-                    this.drawCtx.stroke();
-                }
-
-                AppState.drawing.lastX = x;
-                AppState.drawing.lastY = y;
                 this.canvasTexture.needsUpdate = true;
-
-                if (emit) {
-                    Network.emitDraw({x, y, color, size, tool: tool});
-                }
+                if (emit) Network.emit({type: 'draw', payload: {x, y, color, size, tool}});
             }
 
-            // Remote draw execution (doesn't use AppState.lastX to avoid interfering with local drawing)
             executeRemoteDraw(data) {
                 if(data.tool === 'clear') {
-                    this.drawCtx.fillStyle = '#ffffff';
-                    this.drawCtx.fillRect(0, 0, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT);
-                    this.canvasTexture.needsUpdate = true;
-                    return;
-                }
-                if(data.tool === 'fill') {
+                    this.drawCtx.fillStyle = '#ffffff'; this.drawCtx.fillRect(0, 0, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT);
+                } else if(data.tool === 'fill') {
                     Utils.floodFill(this.drawCtx, data.x, data.y, data.color);
-                    this.canvasTexture.needsUpdate = true;
-                    return;
+                } else {
+                    this.drawCtx.lineCap = 'round'; this.drawCtx.lineJoin = 'round';
+                    this.drawCtx.lineWidth = data.size; this.drawCtx.strokeStyle = data.tool === 'erase' ? '#ffffff' : data.color;
+                    this.drawCtx.beginPath(); this.drawCtx.moveTo(data.x, data.y); this.drawCtx.lineTo(data.x+0.1, data.y+0.1); this.drawCtx.stroke();
                 }
-
-                // For remote lines, we assume single point stamping due to simple protocol here
-                // In a true prod app, we'd track remote user's last positions
-                this.drawCtx.lineCap = 'round';
-                this.drawCtx.lineJoin = 'round';
-                this.drawCtx.lineWidth = data.size;
-                this.drawCtx.strokeStyle = data.tool === 'erase' ? '#ffffff' : data.color;
-                
-                this.drawCtx.beginPath();
-                this.drawCtx.moveTo(data.x, data.y);
-                this.drawCtx.lineTo(data.x+0.1, data.y+0.1); // stamp
-                this.drawCtx.stroke();
                 this.canvasTexture.needsUpdate = true;
             }
 
@@ -1068,6 +557,7 @@
                 const coords = this.getTextureCoordinates(e.clientX, e.clientY);
                 if (coords) {
                     AppState.drawing.isDrawing = true;
+                    AppState.drawing.lastX = coords.x; AppState.drawing.lastY = coords.y;
                     this.executeDrawAction(coords.x, coords.y, AppState.drawing.color, AppState.drawing.size, AppState.drawing.tool, true);
                 }
             }
@@ -1075,15 +565,10 @@
             onPointerMove(e) {
                 if (!AppState.drawing.isDrawing || AppState.room.drawerId !== AppState.user.id) return;
                 const coords = this.getTextureCoordinates(e.clientX, e.clientY);
-                if (coords) {
-                    this.executeDrawAction(coords.x, coords.y, AppState.drawing.color, AppState.drawing.size, AppState.drawing.tool, true);
-                }
+                if (coords) this.executeDrawAction(coords.x, coords.y, AppState.drawing.color, AppState.drawing.size, AppState.drawing.tool, true);
             }
 
-            onPointerUp() {
-                AppState.drawing.isDrawing = false;
-            }
-
+            onPointerUp() { AppState.drawing.isDrawing = false; }
             onTouchDown(e) { e.preventDefault(); this.onPointerDown(e.touches[0]); }
             onTouchMove(e) { e.preventDefault(); this.onPointerMove(e.touches[0]); }
 
@@ -1091,92 +576,61 @@
                 this.camera.aspect = window.innerWidth / window.innerHeight;
                 this.camera.updateProjectionMatrix();
                 this.renderer.setSize(window.innerWidth, window.innerHeight);
-                
-                // Adjust camera distance based on screen width for mobile
-                if(window.innerWidth < 800) {
-                    this.camera.position.z = 28;
-                } else {
-                    this.camera.position.z = 20;
-                }
+                this.camera.position.z = window.innerWidth < 800 ? 28 : 20;
             }
 
             triggerCorrectGuessEffect() {
-                // Flash board green
-                const originalColor = this.drawSurface.material.color.getHex();
                 this.drawSurface.material.color.setHex(0x2ed573);
-                setTimeout(() => {
-                    this.drawSurface.material.color.setHex(0xffffff);
-                }, 300);
+                setTimeout(() => this.drawSurface.material.color.setHex(0xffffff), 300);
             }
 
             animate(time) {
                 requestAnimationFrame(this.animate.bind(this));
                 TWEEN.update(time);
-
-                const delta = this.clock.getDelta();
                 const now = Date.now();
-
-                // Gentle floating animation for the board
                 this.boardGroup.position.y = Math.sin(now * 0.001) * 0.5;
                 this.boardGroup.rotation.y = Math.sin(now * 0.0005) * 0.05;
-
-                // Animate background particles
                 this.floatingObjects.forEach(obj => {
-                    obj.mesh.rotation.x += obj.speed;
-                    obj.mesh.rotation.y += obj.speed;
+                    obj.mesh.rotation.x += obj.speed; obj.mesh.rotation.y += obj.speed;
                     obj.mesh.position.y = obj.baseY + Math.sin(now * obj.floatSpeed) * 2;
                 });
-
                 this.renderer.render(this.scene, this.camera);
             }
         }
 
-        // --- 5. UI CONTROLLER ---
         const UI = {
             init: () => {
-                // Avatar selection
                 document.querySelectorAll('.avatar-option').forEach(el => {
                     el.addEventListener('click', (e) => {
                         document.querySelectorAll('.avatar-option').forEach(a => a.classList.remove('selected'));
-                        e.target.classList.add('selected');
-                        AppState.user.avatar = e.target.dataset.avatar;
+                        e.target.classList.add('selected'); AppState.user.avatar = e.target.dataset.avatar;
                     });
                 });
 
-                // Join Button
                 document.getElementById('btn-join-game').addEventListener('click', () => {
-                    const name = document.getElementById('username-input').value.trim() || 'Player' + Math.floor(Math.random()*1000);
-                    AppState.user.name = name;
-                    
-                    // Transition View
+                    AppState.user.name = document.getElementById('username-input').value.trim() || 'Player' + Math.floor(Math.random()*1000);
+                    AppState.user.id = Utils.generateId();
                     document.getElementById('view-lobby').classList.remove('active');
                     document.getElementById('view-game').classList.add('active');
-                    
-                    // Initialize Network/Simulation
                     Network.connect();
                 });
 
-                // Chat Input
                 const chatInput = document.getElementById('chat-input');
                 chatInput.addEventListener('keypress', (e) => {
                     if(e.key === 'Enter' && chatInput.value.trim() !== '') {
-                        Network.sendChat(chatInput.value.trim());
+                        Network.emit({type: 'chat', payload: { sender: AppState.user.name, text: chatInput.value.trim() }});
                         chatInput.value = '';
                     }
                 });
 
-                // Tools Setup
                 const colorGrid = document.getElementById('ui-color-grid');
                 CONFIG.COLORS.forEach((color, index) => {
                     const swatch = document.createElement('div');
                     swatch.className = 'color-swatch' + (index===0?' active':'');
                     swatch.style.backgroundColor = color;
-                    swatch.dataset.color = color;
                     swatch.addEventListener('click', (e) => {
                         document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
-                        e.target.classList.add('active');
-                        AppState.drawing.color = color;
-                        UI.setTool('brush'); // Auto switch to brush when picking color
+                        e.target.classList.add('active'); AppState.drawing.color = color; UI.setTool('brush');
                     });
                     colorGrid.appendChild(swatch);
                 });
@@ -1184,13 +638,8 @@
                 document.getElementById('tool-brush').addEventListener('click', () => UI.setTool('brush'));
                 document.getElementById('tool-fill').addEventListener('click', () => UI.setTool('fill'));
                 document.getElementById('tool-erase').addEventListener('click', () => UI.setTool('erase'));
-                document.getElementById('tool-clear').addEventListener('click', () => {
-                    window.engine.executeDrawAction(0,0,'#fff',1,'clear',true);
-                });
-
-                document.getElementById('ui-brush-size').addEventListener('input', (e) => {
-                    AppState.drawing.size = parseInt(e.target.value);
-                });
+                document.getElementById('tool-clear').addEventListener('click', () => window.engine.executeDrawAction(0,0,'#fff',1,'clear',true));
+                document.getElementById('ui-brush-size').addEventListener('input', (e) => AppState.drawing.size = parseInt(e.target.value));
             },
 
             setTool: (toolName) => {
@@ -1200,23 +649,13 @@
             },
 
             updatePlayerList: () => {
-                const list = document.getElementById('ui-player-list');
-                list.innerHTML = '';
-                
-                // Sort by score
+                const list = document.getElementById('ui-player-list'); list.innerHTML = '';
                 const sortedPlayers = [...AppState.room.players].sort((a,b) => b.score - a.score);
-                
                 document.getElementById('ui-player-count').innerText = `${sortedPlayers.length}/${CONFIG.MAX_PLAYERS}`;
 
                 sortedPlayers.forEach((p, index) => {
-                    const isMe = p.id === AppState.user.id;
-                    const isDrawer = p.id === AppState.room.drawerId;
-                    
-                    let cardClass = 'player-card';
-                    if(isMe) cardClass += ' is-me';
-                    if(isDrawer) cardClass += ' is-drawer';
-                    if(p.hasGuessed) cardClass += ' has-guessed';
-
+                    const isMe = p.id === AppState.user.id; const isDrawer = p.id === AppState.room.drawerId;
+                    let cardClass = 'player-card' + (isMe ? ' is-me' : '') + (isDrawer ? ' is-drawer' : '') + (p.hasGuessed ? ' has-guessed' : '');
                     list.innerHTML += `
                         <div class="${cardClass}">
                             <div class="player-rank">#${index+1}</div>
@@ -1225,10 +664,8 @@
                                 <span class="player-name">${p.name} ${isMe ? '(You)' : ''}</span>
                                 <span class="player-score">${p.score} pts</span>
                             </div>
-                            ${isDrawer ? '🖌️' : ''}
-                            ${p.hasGuessed ? '✔️' : ''}
-                        </div>
-                    `;
+                            ${isDrawer ? '🖌️' : ''} ${p.hasGuessed ? '✔️' : ''}
+                        </div>`;
                 });
             },
 
@@ -1236,221 +673,202 @@
                 const container = document.getElementById('ui-chat-messages');
                 const div = document.createElement('div');
                 div.className = `chat-msg ${msgObj.type}`;
-                
-                if(msgObj.type === 'standard') {
-                    div.innerHTML = `<span class="sender">${msgObj.sender}:</span> ${msgObj.text}`;
-                } else {
-                    div.innerText = msgObj.text;
-                }
-                
-                container.appendChild(div);
-                container.scrollTop = container.scrollHeight;
+                div.innerHTML = msgObj.type === 'standard' ? `<span class="sender">${msgObj.sender}:</span> ${msgObj.text}` : msgObj.text;
+                container.appendChild(div); container.scrollTop = container.scrollHeight;
             },
 
             updateHUD: () => {
                 document.getElementById('ui-round-text').innerText = `Round ${AppState.room.round} / ${AppState.room.maxRounds}`;
-                
                 const isMeDrawing = AppState.room.drawerId === AppState.user.id;
                 const drawerPlayer = AppState.room.players.find(p => p.id === AppState.room.drawerId);
                 const drawerName = drawerPlayer ? drawerPlayer.name : 'Someone';
 
-                if (AppState.room.state === 'WAITING') {
-                    document.getElementById('ui-word-display').innerText = 'W A I T I N G';
-                    document.getElementById('ui-drawer-text').innerText = 'Waiting for players...';
-                    document.getElementById('ui-tools-palette').classList.add('hidden');
-                    document.getElementById('chat-input').disabled = true;
-                } 
-                else if (AppState.room.state === 'SELECTING') {
-                    document.getElementById('ui-word-display').innerText = 'C H O O S I N G';
-                    document.getElementById('ui-drawer-text').innerText = `${drawerName} is picking a word...`;
-                    document.getElementById('ui-tools-palette').classList.add('hidden');
-                    document.getElementById('chat-input').disabled = true;
-                }
-                else if (AppState.room.state === 'DRAWING') {
-                    document.getElementById('ui-drawer-text').innerText = isMeDrawing ? 'YOU ARE DRAWING' : `${drawerName} IS DRAWING`;
-                    
-                    if (isMeDrawing) {
-                        document.getElementById('ui-word-display').innerText = AppState.room.currentWord;
-                        document.getElementById('ui-tools-palette').classList.remove('hidden');
-                        document.getElementById('chat-input').disabled = true;
-                    } else {
-                        // Create blank spaces based on word length
-                        let blanks = '';
-                        for(let i=0; i<AppState.room.wordLength; i++) blanks += '_ ';
-                        document.getElementById('ui-word-display').innerText = blanks.trim();
-                        document.getElementById('ui-tools-palette').classList.add('hidden');
-                        document.getElementById('chat-input').disabled = false;
-                        document.getElementById('chat-input').focus();
+                const stateMap = {
+                    'WAITING': { display: 'W A I T I N G', drawer: 'Waiting for players...', tools: false, input: false },
+                    'SELECTING': { display: 'C H O O S I N G', drawer: `${drawerName} is picking a word...`, tools: false, input: false },
+                    'DRAWING': { 
+                        display: isMeDrawing ? AppState.room.currentWord : '_ '.repeat(AppState.room.wordLength).trim(), 
+                        drawer: isMeDrawing ? 'YOU ARE DRAWING' : `${drawerName} IS DRAWING`, 
+                        tools: isMeDrawing, 
+                        input: !isMeDrawing 
                     }
-                }
+                };
+
+                const current = stateMap[AppState.room.state] || stateMap['WAITING'];
+                document.getElementById('ui-word-display').innerText = current.display;
+                document.getElementById('ui-drawer-text').innerText = current.drawer;
+                document.getElementById('ui-tools-palette').classList.toggle('hidden', !current.tools);
+                
+                const chatInput = document.getElementById('chat-input');
+                chatInput.disabled = !current.input;
+                if(current.input) chatInput.focus();
             },
 
             updateTimer: (seconds, totalSeconds = 80) => {
                 document.getElementById('ui-timer-text').innerText = seconds;
                 const ring = document.getElementById('ui-timer-ring');
-                
-                // Circumference is 2 * pi * r (r=22) ~= 138.2. Dasharray is 140.
-                const dashoffset = 140 - (seconds / totalSeconds) * 140;
-                ring.style.strokeDashoffset = dashoffset;
-                
-                if (seconds <= 10) {
-                    ring.style.stroke = 'var(--danger)';
-                    document.getElementById('ui-timer-text').style.color = 'var(--danger)';
-                } else {
-                    ring.style.stroke = 'var(--accent-primary)';
-                    document.getElementById('ui-timer-text').style.color = 'white';
-                }
+                ring.style.strokeDashoffset = 140 - (seconds / totalSeconds) * 140;
+                const isDanger = seconds <= 10;
+                ring.style.stroke = isDanger ? 'var(--danger)' : 'var(--accent-primary)';
+                document.getElementById('ui-timer-text').style.color = isDanger ? 'var(--danger)' : 'white';
             },
 
             showWordSelection: (words) => {
                 const overlay = document.getElementById('overlay-word-pick');
                 const optionsContainer = document.getElementById('ui-word-options');
                 optionsContainer.innerHTML = '';
-                
                 words.forEach(word => {
                     const btn = document.createElement('div');
-                    btn.className = 'word-option-btn';
-                    btn.innerText = word;
-                    btn.onclick = () => {
-                        Network.emitWordSelect(word);
-                        overlay.classList.remove('active');
-                    };
+                    btn.className = 'word-option-btn'; btn.innerText = word;
+                    btn.onclick = () => { Network.emit({type: 'word_select', payload: word}); overlay.classList.remove('active'); };
                     optionsContainer.appendChild(btn);
                 });
-                
                 overlay.classList.add('active');
             }
         };
 
-        // --- 6. NETWORK CONTROLLER (SOCKET/SIMULATION) ---
-        // Since this is HTML only, we create a robust local simulation that mimics socket behavior
-        // If io() is available and connecting to a real server, it will use that.
-                const Network = {
-            peer: null,
-            conn: null,
-            isHost: false,
-            connections: [],
-        
+        const Network = {
+            peer: null, conn: null, isHost: false, connections: [],
+
             connect: () => {
-                // Use your GitHub Username + "3D-Skribbl" as the room ID
-                const roomId = "JaapThind-3D-Skribbl-Room"; 
+                const roomId = "JaapThind-3D-Skribbl-Global"; 
                 Network.peer = new Peer();
-        
+                
                 Network.peer.on('open', (id) => {
-                    console.log('My ID: ' + id);
-                    // Try to connect to the room
                     const conn = Network.peer.connect(roomId);
-                    Network.setupConn(conn);
-                    
-                    // If nobody is hosting, I become the host
+                    let connectedToHost = false;
+
+                    conn.on('open', () => {
+                        connectedToHost = true;
+                        Network.conn = conn;
+                        Network.setupClient(conn);
+                        UI.addChatMessage({type: 'system', text: 'Connected to Host!'});
+                        conn.send({type: 'join', payload: AppState.user});
+                    });
+
                     setTimeout(() => {
-                        if (!Network.conn) {
-                            Network.isHost = true;
-                            Network.peer = new Peer(roomId);
-                            Network.peer.on('connection', (c) => {
-                                Network.connections.push(c);
-                                Network.setupConn(c);
-                                UI.addChatMessage({type: 'system', text: 'A new player joined your host!'});
-                            });
-                            UI.addChatMessage({type: 'system', text: 'You are the HOST of this room.'});
-                            AppState.network.isSimulated = false;
+                        if (!connectedToHost) {
+                            Network.peer.destroy();
+                            setTimeout(() => {
+                                Network.peer = new Peer(roomId);
+                                Network.peer.on('open', () => {
+                                    Network.isHost = true;
+                                    UI.addChatMessage({type: 'system', text: 'You are the HOST.'});
+                                    AppState.room.players.push({...AppState.user, peerId: 'host'});
+                                    UI.updatePlayerList();
+                                    GameServer.init();
+                                });
+                                Network.peer.on('connection', (c) => {
+                                    Network.connections.push(c);
+                                    c.on('open', () => Network.setupHost(c));
+                                    c.on('close', () => GameServer.removePlayer(c.peer));
+                                });
+                            }, 1000);
                         }
-                    }, 1000);
+                    }, 2500);
                 });
             },
-        
-            setupConn: (c) => {
-                Network.conn = c;
+
+            setupClient: (c) => {
                 c.on('data', (data) => {
                     if (data.type === 'draw') window.engine.executeRemoteDraw(data.payload);
                     if (data.type === 'chat') UI.addChatMessage(data.payload);
+                    if (data.type === 'state') {
+                        AppState.room = data.payload;
+                        UI.updateHUD(); UI.updatePlayerList();
+                    }
+                    if (data.type === 'timer') UI.updateTimer(data.payload.sec, data.payload.total);
+                    if (data.type === 'word_pick') UI.showWordSelection(data.payload);
+                    if (data.type === 'correct_effect') window.engine.triggerCorrectGuessEffect();
                 });
             },
-        
-            sendChat: (msg) => {
-                const payload = { type: 'standard', sender: AppState.user.name, text: msg };
-                UI.addChatMessage(payload);
+
+            setupHost: (c) => {
+                c.on('data', (data) => {
+                    if (data.type === 'join') {
+                        AppState.room.players.push({ ...data.payload, peerId: c.peer });
+                        Network.broadcast({type: 'chat', payload: {type: 'system', text: `${data.payload.name} joined!`}});
+                        Network.broadcastState();
+                        if(AppState.room.players.length >= 2 && AppState.room.state === 'WAITING') GameServer.startRound();
+                    }
+                    if (data.type === 'draw') {
+                        window.engine.executeRemoteDraw(data.payload);
+                        Network.connections.forEach(conn => { if(conn.peer !== c.peer) conn.send(data); });
+                    }
+                    if (data.type === 'chat') GameServer.handleChat(data.payload, c.peer);
+                    if (data.type === 'word_select') GameServer.handleWordSelect(data.payload);
+                });
+            },
+
+            emit: (data) => {
                 if (Network.isHost) {
-                    Network.connections.forEach(c => c.send({type: 'chat', payload}));
+                    if (data.type === 'draw') Network.connections.forEach(c => c.send(data));
+                    if (data.type === 'chat') GameServer.handleChat(data.payload, 'host');
+                    if (data.type === 'word_select') GameServer.handleWordSelect(data.payload);
                 } else if (Network.conn) {
-                    Network.conn.send({type: 'chat', payload});
+                    Network.conn.send(data);
                 }
             },
-        
-            emitDraw: (data) => {
-                if (Network.isHost) {
-                    Network.connections.forEach(c => c.send({type: 'draw', payload: data}));
-                } else if (Network.conn) {
-                    Network.conn.send({type: 'draw', payload: data});
-                }
+
+            broadcast: (data) => {
+                if(data.type === 'chat') UI.addChatMessage(data.payload);
+                if(data.type === 'correct_effect') window.engine.triggerCorrectGuessEffect();
+                if(data.type === 'word_pick') UI.showWordSelection(data.payload);
+                Network.connections.forEach(c => c.send(data));
             },
-        
-            emitWordSelect: (word) => {
-                // P2P logic for word sync
-                AppState.room.currentWord = word;
-                UI.updateHUD();
+            
+            broadcastState: () => {
+                UI.updateHUD(); UI.updatePlayerList();
+                Network.connections.forEach(c => c.send({type: 'state', payload: AppState.room}));
             }
         };
 
-        const SimulatedServer = {
-            botNames: ["Bot_Alpha", "DrawMaster99", "GlassLiquid", "C++_Fan", "SeattleFan12"],
-            timerInterval: null,
+        const GameServer = {
+            timerInterval: null, drawerIndex: -1,
             
             init: () => {
-                // Add local player
-                AppState.room.players.push({
-                    id: AppState.user.id,
-                    name: AppState.user.name,
-                    avatar: AppState.user.avatar,
-                    score: 0,
-                    hasGuessed: false
-                });
+                AppState.room.state = 'WAITING';
+                Network.broadcastState();
+            },
 
-                // Add some bots
-                for(let i=0; i<3; i++) {
-                    AppState.room.players.push({
-                        id: 'bot_' + i,
-                        name: SimulatedServer.botNames[i],
-                        avatar: ['🤖','👽','👾'][i],
-                        score: 0,
-                        hasGuessed: false
-                    });
-                }
-
-                UI.updatePlayerList();
-                UI.addChatMessage({type: 'system', text: 'Server unreachable. Entering Local Offline Mode with Bots.'});
-                
-                setTimeout(SimulatedServer.startRound, 2000);
+            removePlayer: (peerId) => {
+                AppState.room.players = AppState.room.players.filter(p => p.peerId !== peerId);
+                Network.broadcastState();
             },
 
             startRound: () => {
-                AppState.room.round++;
-                AppState.room.players.forEach(p => p.hasGuessed = false);
+                if(AppState.room.players.length < 2) { AppState.room.state = 'WAITING'; Network.broadcastState(); return; }
+                
+                GameServer.drawerIndex++;
+                if(GameServer.drawerIndex >= AppState.room.players.length) {
+                    GameServer.drawerIndex = 0;
+                    AppState.room.round++;
+                }
+                
+                if(AppState.room.round > AppState.room.maxRounds) {
+                    Network.broadcast({type: 'chat', payload: {type: 'system', text: 'GAME OVER!'}});
+                    return;
+                }
 
-                // Pick drawer (alternate between player and bot)
-                if(AppState.room.round % 2 !== 0) {
-                    AppState.room.drawerId = AppState.user.id;
-                    AppState.room.state = 'SELECTING';
-                    UI.updateHUD();
-                    UI.updatePlayerList();
-                    
-                    // Give words
-                    const words = [];
-                    while(words.length < 3) {
-                        const w = CONFIG.WORD_BANK[Math.floor(Math.random() * CONFIG.WORD_BANK.length)];
-                        if(!words.includes(w)) words.push(w);
-                    }
+                AppState.room.players.forEach(p => p.hasGuessed = false);
+                const drawer = AppState.room.players[GameServer.drawerIndex];
+                AppState.room.drawerId = drawer.id;
+                AppState.room.state = 'SELECTING';
+                
+                window.engine.executeDrawAction(0,0,'#fff',1,'clear',true);
+                Network.broadcastState();
+
+                const words = [];
+                while(words.length < 3) {
+                    const w = CONFIG.WORD_BANK[Math.floor(Math.random() * CONFIG.WORD_BANK.length)];
+                    if(!words.includes(w)) words.push(w);
+                }
+
+                if(drawer.peerId === 'host') {
                     UI.showWordSelection(words);
                 } else {
-                    AppState.room.drawerId = 'bot_0';
-                    AppState.room.state = 'DRAWING';
-                    const targetWord = CONFIG.WORD_BANK[Math.floor(Math.random() * CONFIG.WORD_BANK.length)];
-                    AppState.room.currentWord = targetWord;
-                    AppState.room.wordLength = targetWord.length;
-                    UI.updateHUD();
-                    UI.updatePlayerList();
-                    SimulatedServer.startTimer(60);
-                    SimulatedServer.botDrawRoutine();
+                    const c = Network.connections.find(conn => conn.peer === drawer.peerId);
+                    if(c) c.send({type: 'word_pick', payload: words});
                 }
             },
 
@@ -1458,125 +876,69 @@
                 AppState.room.currentWord = word;
                 AppState.room.wordLength = word.length;
                 AppState.room.state = 'DRAWING';
-                UI.updateHUD();
-                SimulatedServer.startTimer(80);
-                
-                // Bots guess randomly
-                SimulatedServer.botGuessRoutine();
+                Network.broadcastState();
+                GameServer.startTimer(80);
             },
 
-            handleChat: (msg) => {
-                if(AppState.room.state !== 'DRAWING') {
-                    UI.addChatMessage({type: 'standard', sender: AppState.user.name, text: msg});
-                    return;
-                }
+            handleChat: (payload, peerId) => {
+                const player = AppState.room.players.find(p => p.peerId === peerId);
+                if(!player) return;
 
-                if(AppState.room.drawerId === AppState.user.id) {
-                    UI.addChatMessage({type: 'system', text: 'You cannot chat while drawing!'});
-                    return;
-                }
+                if(AppState.room.state === 'DRAWING' && AppState.room.drawerId !== player.id && !player.hasGuessed) {
+                    if(payload.text.toLowerCase() === AppState.room.currentWord.toLowerCase()) {
+                        player.hasGuessed = true;
+                        player.score += Math.max(10, AppState.room.timeRemaining);
+                        
+                        const drawer = AppState.room.players.find(p => p.id === AppState.room.drawerId);
+                        if(drawer) drawer.score += 5;
 
-                const player = AppState.room.players.find(p=>p.id === AppState.user.id);
-                if(player.hasGuessed) {
-                    UI.addChatMessage({type: 'system', text: 'You already guessed it!'});
-                    return;
-                }
-
-                if(msg.toLowerCase() === AppState.room.currentWord.toLowerCase()) {
-                    player.hasGuessed = true;
-                    player.score += Math.max(10, AppState.room.timeRemaining);
-                    UI.addChatMessage({type: 'correct', text: `${AppState.user.name} guessed the word!`});
-                    window.engine.triggerCorrectGuessEffect();
-                    UI.updatePlayerList();
-                    SimulatedServer.checkRoundEnd();
-                } else {
-                    // Check for close guess (edit distance simplistic check)
-                    if(msg.length === AppState.room.currentWord.length && msg[0].toLowerCase() === AppState.room.currentWord[0].toLowerCase()) {
-                        UI.addChatMessage({type: 'close', text: `'${msg}' is close!`});
+                        Network.broadcast({type: 'chat', payload: {type: 'correct', text: `${player.name} guessed the word!`}});
+                        Network.broadcast({type: 'correct_effect'});
+                        Network.broadcastState();
+                        GameServer.checkRoundEnd();
+                        return;
+                    } else if (payload.text.length === AppState.room.currentWord.length && payload.text[0].toLowerCase() === AppState.room.currentWord[0].toLowerCase()) {
+                        if(peerId === 'host') UI.addChatMessage({type: 'close', text: `'${payload.text}' is close!`});
+                        else Network.connections.find(c => c.peer === peerId)?.send({type: 'chat', payload: {type: 'close', text: `'${payload.text}' is close!`}});
                     }
-                    UI.addChatMessage({type: 'standard', sender: AppState.user.name, text: msg});
                 }
+                
+                if (AppState.room.drawerId === player.id && AppState.room.state === 'DRAWING') {
+                     if(peerId === 'host') UI.addChatMessage({type: 'system', text: 'You cannot chat while drawing!'});
+                     else Network.connections.find(c => c.peer === peerId)?.send({type: 'chat', payload: {type: 'system', text: 'You cannot chat while drawing!'}});
+                     return;
+                }
+
+                Network.broadcast({type: 'chat', payload: {type: 'standard', sender: player.name, text: payload.text}});
             },
 
             startTimer: (seconds) => {
-                clearInterval(SimulatedServer.timerInterval);
+                clearInterval(GameServer.timerInterval);
                 AppState.room.timeRemaining = seconds;
                 const total = seconds;
+                Network.broadcast({type: 'timer', payload: {sec: seconds, total}});
                 
-                SimulatedServer.timerInterval = setInterval(() => {
+                GameServer.timerInterval = setInterval(() => {
                     AppState.room.timeRemaining--;
-                    UI.updateTimer(AppState.room.timeRemaining, total);
-                    
-                    if(AppState.room.timeRemaining <= 0) {
-                        clearInterval(SimulatedServer.timerInterval);
-                        SimulatedServer.endRound();
-                    }
+                    Network.broadcast({type: 'timer', payload: {sec: AppState.room.timeRemaining, total}});
+                    if(AppState.room.timeRemaining <= 0) GameServer.endRound();
                 }, 1000);
             },
 
             checkRoundEnd: () => {
                 const nonDrawers = AppState.room.players.filter(p => p.id !== AppState.room.drawerId);
-                if(nonDrawers.every(p => p.hasGuessed)) {
-                    clearInterval(SimulatedServer.timerInterval);
-                    SimulatedServer.endRound();
-                }
+                if(nonDrawers.every(p => p.hasGuessed)) GameServer.endRound();
             },
 
             endRound: () => {
+                clearInterval(GameServer.timerInterval);
                 AppState.room.state = 'WAITING';
-                UI.addChatMessage({type: 'system', text: `Round over! The word was: ${AppState.room.currentWord}`});
-                UI.updateHUD();
-                
-                setTimeout(() => {
-                    if(AppState.room.round < AppState.room.maxRounds) {
-                        SimulatedServer.startRound();
-                    } else {
-                        UI.addChatMessage({type: 'system', text: 'GAME OVER!'});
-                    }
-                }, 4000);
-            },
-
-            botDrawRoutine: () => {
-                // Simulate a bot scribbling randomly if they are drawing
-                if(AppState.room.state !== 'DRAWING' || AppState.room.drawerId !== 'bot_0') return;
-                
-                let steps = 50;
-                let drawInterval = setInterval(() => {
-                    if(AppState.room.state !== 'DRAWING') {
-                        clearInterval(drawInterval);
-                        return;
-                    }
-                    const x = 100 + Math.random() * (CONFIG.CANVAS_WIDTH - 200);
-                    const y = 100 + Math.random() * (CONFIG.CANVAS_HEIGHT - 200);
-                    window.engine.executeRemoteDraw({
-                        x: x, y: y, color: '#ff4757', size: 10, tool: 'brush'
-                    });
-                    steps--;
-                    if(steps <= 0) clearInterval(drawInterval);
-                }, 200);
-            },
-
-            botGuessRoutine: () => {
-                // Simulate bots guessing your word
-                if(AppState.room.state !== 'DRAWING' || AppState.room.drawerId !== AppState.user.id) return;
-
-                AppState.room.players.forEach(p => {
-                    if(p.id !== AppState.user.id) {
-                        setTimeout(() => {
-                            if(AppState.room.state === 'DRAWING' && Math.random() > 0.5) {
-                                p.hasGuessed = true;
-                                p.score += 50;
-                                UI.addChatMessage({type: 'correct', text: `${p.name} guessed the word!`});
-                                UI.updatePlayerList();
-                                SimulatedServer.checkRoundEnd();
-                            }
-                        }, 5000 + Math.random() * 20000); // Guess between 5s and 25s
-                    }
-                });
+                Network.broadcast({type: 'chat', payload: {type: 'system', text: `Round over! The word was: ${AppState.room.currentWord}`}});
+                Network.broadcastState();
+                setTimeout(GameServer.startRound, 4000);
             }
         };
 
-        // --- INIT POINT ---
         window.onload = () => {
             window.engine = new Engine3D();
             UI.init();
