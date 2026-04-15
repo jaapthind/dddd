@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>3D Skribbl - Advanced Liquid Glass Edition</title>
     <style>
@@ -724,9 +725,7 @@
                 '#ff4757', '#2ed573' // Extra Liquid Glass Theme Colors
             ],
             WORD_BANK: [
-                "Geometry Dash", "Retro Bowl", "Smash Karts", "Moto G Stylus", 
-                "HP Pavilion Aero", "Basketball", "Seahawks", "C++", "Raspberry Pi", 
-                "Arduino", "3D Printer", "Gimbal", "Liquid Glass", "GitHub", "Keyboard"
+                "Apple", "Ant", "Airplane", "Anchor", "Angel", "Arm", "Axe", "Baby", "Ball", "Balloon", "Banana", "Bank", "Baseball", "Basket", "Bat", "Bath", "Beach", "Bear", "Beard", "Bed", "Bee", "Bell", "Belt", "Bench", "Bird", "Birthday", "Boat", "Book", "Boot", "Bottle", "Bowl", "Box", "Boy", "Brain", "Bridge", "Brush", "Bucket", "Bus", "Butterfly", "Button", "Cake", "Camera", "Candle", "Candy", "Car", "Carrot", "Castle", "Cat", "Chair", "Cheese", "Cherry", "Chess", "Chicken", "Church", "Circle", "Clock", "Cloud", "Coat", "Coffee", "Comb", "Computer", "Cookie", "Corn", "Cow", "Crab", "Crayon", "Crown", "Cup", "Desk", "Diamond", "Dinosaur", "Dog", "Doll", "Dolphin", "Door", "Dragon", "Drum", "Duck", "Ear", "Earth", "Egg", "Elephant", "Eye", "Face", "Fan", "Feather", "Fence", "Finger", "Fire", "Fish", "Flag", "Flower", "Flute", "Fly", "Foot", "Fork", "Frog", "Gate", "Ghost", "Giraffe", "Glass", "Glove", "Goat", "Gold", "Grapes", "Grass", "Guitar", "Hammer", "Hand", "Harp", "Hat", "Heart", "Helicopter", "Hippo", "Horse", "Hospital", "House", "Ice", "Igloo", "Island", "Jacket", "Jar", "Jellyfish", "Jet", "Key", "King", "Kite", "Knife", "Ladder", "Lamp", "Leaf", "Leg", "Lemon", "Light", "Lion", "Lips", "Lizard", "Lock", "Lollipop", "Magnet", "Map", "Mask", "Milk", "Money", "Monkey", "Moon", "Mountain", "Mouse", "Mouth", "Mushroom", "Nail", "Neck", "Needle", "Nest", "Nose", "Notebook", "Ocean", "Octopus", "Orange", "Owl", "Paint", "Pants", "Paper", "Parrot", "Pencil", "Penguin", "Piano", "Picture", "Pie", "Pig", "Pillow", "Pizza", "Plane", "Plant", "Pocket", "Pot", "Potato", "Pumpkin", "Puppy", "Pyramid", "Queen", "Rabbit", "Radio", "Rain", "Rainbow", "Rake", "Rat", "Ring", "River", "Robot", "Rocket", "Rock", "Roof", "Rope", "Rose", "Sailboat", "Sandwich", "School", "Scissors", "Scorpion", "Shark", "Sheep", "Ship", "Shirt", "Shoe", "Skateboard", "Skeleton", "Snake", "Snowman", "Soap", "Sock", "Sofa", "Spider", "Spoon", "Star", "Sun", "Table", "Teapot", "Telephone", "Television", "Tent", "Tiger", "Toaster", "Tomato", "Tooth", "Torch", "Train", "Tree", "Truck", "Turtle", "Umbrella", "Violin", "Volcano", "Watch", "Water", "Whale", "Wheel", "Window", "Wolf", "Worm", "Zebra", "Zipper"
             ]
         };
 
@@ -1011,31 +1010,16 @@
                     this.drawCtx.fillStyle = '#ffffff';
                     this.drawCtx.fillRect(0, 0, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT);
                     this.canvasTexture.needsUpdate = true;
-                    if(emit && Network.socket) Network.emitDraw({tool: 'clear'});
+                    if(emit && Network.isHost) Network.emitDraw({tool: 'clear'});
                     return;
                 }
 
-                if (tool === 'fill') {
-                    Utils.floodFill(this.drawCtx, x, y, color);
-                    this.canvasTexture.needsUpdate = true;
-                    if(emit && Network.socket) Network.emitDraw({x, y, color, tool: 'fill'});
-                    return;
-                }
-
-                // Brush or Erase
                 this.drawCtx.lineCap = 'round';
                 this.drawCtx.lineJoin = 'round';
                 this.drawCtx.lineWidth = size;
                 this.drawCtx.strokeStyle = tool === 'erase' ? '#ffffff' : color;
 
-                if (!AppState.drawing.isDrawing && emit) {
-                    // Start of stroke
-                    this.drawCtx.beginPath();
-                    this.drawCtx.moveTo(x, y);
-                    this.drawCtx.lineTo(x, y);
-                    this.drawCtx.stroke();
-                } else {
-                    // Continuation
+                if (AppState.drawing.isDrawing) {
                     this.drawCtx.beginPath();
                     this.drawCtx.moveTo(AppState.drawing.lastX, AppState.drawing.lastY);
                     this.drawCtx.lineTo(x, y);
@@ -1046,7 +1030,7 @@
                 AppState.drawing.lastY = y;
                 this.canvasTexture.needsUpdate = true;
 
-                if (emit && Network.socket) {
+                if (emit) {
                     Network.emitDraw({x, y, color, size, tool: tool});
                 }
             }
@@ -1341,78 +1325,70 @@
         // --- 6. NETWORK CONTROLLER (SOCKET/SIMULATION) ---
         // Since this is HTML only, we create a robust local simulation that mimics socket behavior
         // If io() is available and connecting to a real server, it will use that.
-        const Network = {
-            socket: null,
-            
+                const Network = {
+            peer: null,
+            conn: null,
+            isHost: false,
+            connections: [],
+        
             connect: () => {
-                try {
-                    // Attempt real connection if hosted on a Node.js server
-                    Network.socket = io({reconnectionAttempts: 2, timeout: 2000});
+                // Use your GitHub Username + "3D-Skribbl" as the room ID
+                const roomId = "JaapThind-3D-Skribbl-Room"; 
+                Network.peer = new Peer();
+        
+                Network.peer.on('open', (id) => {
+                    console.log('My ID: ' + id);
+                    // Try to connect to the room
+                    const conn = Network.peer.connect(roomId);
+                    Network.setupConn(conn);
                     
-                    Network.socket.on('connect', () => {
-                        AppState.network.isSimulated = false;
-                        Network.setupRealHandlers();
-                        Network.socket.emit('join', {name: AppState.user.name, avatar: AppState.user.avatar});
-                    });
-
-                    Network.socket.on('connect_error', () => {
-                        Network.startSimulationFallback();
-                    });
-                } catch(e) {
-                    // io is not defined or blocked
-                    Network.startSimulationFallback();
-                }
-            },
-
-            setupRealHandlers: () => {
-                const s = Network.socket;
-                s.on('init', data => { AppState.user.id = data.id; });
-                s.on('stateUpdate', data => {
-                    Object.assign(AppState.room, data);
-                    UI.updatePlayerList();
-                    UI.updateHUD();
-                });
-                s.on('drawData', data => window.engine.executeRemoteDraw(data));
-                s.on('chat', data => UI.addChatMessage(data));
-                s.on('timer', data => UI.updateTimer(data.time, data.total));
-                s.on('requestWordSelect', data => UI.showWordSelection(data.words));
-                s.on('correctGuess', data => {
-                    UI.addChatMessage({type: 'correct', text: `${data.name} guessed the word!`});
-                    if(data.id === AppState.user.id) window.engine.triggerCorrectGuessEffect();
+                    // If nobody is hosting, I become the host
+                    setTimeout(() => {
+                        if (!Network.conn) {
+                            Network.isHost = true;
+                            Network.peer = new Peer(roomId);
+                            Network.peer.on('connection', (c) => {
+                                Network.connections.push(c);
+                                Network.setupConn(c);
+                                UI.addChatMessage({type: 'system', text: 'A new player joined your host!'});
+                            });
+                            UI.addChatMessage({type: 'system', text: 'You are the HOST of this room.'});
+                            AppState.network.isSimulated = false;
+                        }
+                    }, 1000);
                 });
             },
-
+        
+            setupConn: (c) => {
+                Network.conn = c;
+                c.on('data', (data) => {
+                    if (data.type === 'draw') window.engine.executeRemoteDraw(data.payload);
+                    if (data.type === 'chat') UI.addChatMessage(data.payload);
+                });
+            },
+        
             sendChat: (msg) => {
-                if(AppState.network.isSimulated) {
-                    SimulatedServer.handleChat(msg);
-                } else {
-                    Network.socket.emit('chat', msg);
+                const payload = { type: 'standard', sender: AppState.user.name, text: msg };
+                UI.addChatMessage(payload);
+                if (Network.isHost) {
+                    Network.connections.forEach(c => c.send({type: 'chat', payload}));
+                } else if (Network.conn) {
+                    Network.conn.send({type: 'chat', payload});
                 }
             },
-
+        
             emitDraw: (data) => {
-                if(!AppState.network.isSimulated && Network.socket) {
-                    Network.socket.emit('draw', data);
+                if (Network.isHost) {
+                    Network.connections.forEach(c => c.send({type: 'draw', payload: data}));
+                } else if (Network.conn) {
+                    Network.conn.send({type: 'draw', payload: data});
                 }
-                // Simulated clients don't need to receive local draw commands back
             },
-
+        
             emitWordSelect: (word) => {
-                if(AppState.network.isSimulated) {
-                    SimulatedServer.handleWordSelect(word);
-                } else {
-                    Network.socket.emit('wordSelect', word);
-                }
-            },
-
-            // --- 7. OFFLINE SIMULATION FALLBACK ---
-            // Simulates multiplayer logic so the HTML works standalone
-            startSimulationFallback: () => {
-                console.log("Starting local simulation mode.");
-                AppState.network.isSimulated = true;
-                AppState.user.id = 'local_user';
-                
-                SimulatedServer.init();
+                // P2P logic for word sync
+                AppState.room.currentWord = word;
+                UI.updateHUD();
             }
         };
 
@@ -1450,7 +1426,6 @@
             startRound: () => {
                 AppState.room.round++;
                 AppState.room.players.forEach(p => p.hasGuessed = false);
-                window.engine.executeDrawAction(0,0,'#fff',1,'clear',false); // Clear board
 
                 // Pick drawer (alternate between player and bot)
                 if(AppState.room.round % 2 !== 0) {
