@@ -497,17 +497,23 @@
 
             animate(time) {
                 requestAnimationFrame(this.animate.bind(this));
-                TWEEN.update(time);
+                if (typeof TWEEN !== 'undefined') TWEEN.update(time);
+                
                 const now = Date.now();
-                //this.boardGroup.position.y = Math.sin(now * 0.001) * 0.5;
-                //this.boardGroup.rotation.y = Math.sin(now * 0.0005) * 0.05;
-                this.floatin/gObjects.forEach(obj => {
-                    obj.mesh.rotation.x += obj.speed; obj.mesh.rotation.y += obj.speed;
-                    obj.mesh.position.y = obj.baseY + Math.sin(now * obj.floatSpeed) * 2;
-                });
+                
+                // BOARD MOVEMENT REMOVED TO FIX DRAWING ACCURACY
+                // The boardGroup lines are gone, so it stays at (0,0,0)
+
+                if (this.floatingObjects) {
+                    this.floatingObjects.forEach(obj => {
+                        obj.mesh.rotation.x += obj.speed; 
+                        obj.mesh.rotation.y += obj.speed;
+                        obj.mesh.position.y = obj.baseY + Math.sin(now * obj.floatSpeed) * 2;
+                    });
+                }
+                
                 this.renderer.render(this.scene, this.camera);
             }
-        }
 
         const UI = {
             init: () => {
