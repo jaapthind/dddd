@@ -405,7 +405,10 @@
                 const coords = this.getTextureCoordinates(e.clientX, e.clientY);
                 if (coords) {
                     AppState.drawing.isDrawing = true;
-                    AppState.drawing.lastX = coords.x; AppState.drawing.lastY = coords.y;
+                    // anchor the start point
+                    AppState.drawing.lastX = coords.x; 
+                    AppState.drawing.lastY = coords.y;
+                    // execute the initial dot
                     this.executeDrawAction(coords.x, coords.y, AppState.drawing.color, AppState.drawing.size, AppState.drawing.tool, true);
                 }
             }
@@ -600,6 +603,13 @@
 
                 Network.channel.subscribe('game-event', (message) => {
                     const data = message.data;
+
+                    if (data.type === 'clear') {
+                        window.engine.drawCtx.fillStyle = '#ffffff';
+                        window.engine.drawCtx.fillRect(0, 0, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT);
+                        window.engine.canvasTexture.needsUpdate = true;
+                    }
+                    
                     
                     if (data.type === 'draw' && message.clientId !== AppState.user.id) {
                         window.engine.executeRemoteDraw(data.payload);
@@ -762,16 +772,21 @@
                 Network.emit({type: 'chat', payload: {type: 'standard', sender: player.name, text: payload.text}});
             },
 
-            startTimer: (seconds) => {
+           startTimer: (seconds) => {
+                if (!AppState.isHost) return;
                 clearInterval(GameServer.timerInterval);
                 AppState.room.timeRemaining = seconds;
                 const total = seconds;
-                Network.emit({type: 'timer', payload: {sec: seconds, total}});
                 
                 GameServer.timerInterval = setInterval(() => {
+                    if (!AppState.isHost) { clearInterval(GameServer.timerInterval); return; }
                     AppState.room.timeRemaining--;
                     Network.emit({type: 'timer', payload: {sec: AppState.room.timeRemaining, total}});
-                    if(AppState.room.timeRemaining <= 0) GameServer.endRound();
+                    
+                    if(AppState.room.timeRemaining <= 0) {
+                        clearInterval(GameServer.timerInterval);
+                        GameServer.endRound();
+                    }
                 }, 1000);
             },
 
