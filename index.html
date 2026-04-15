@@ -116,6 +116,16 @@
         .word-options { display: flex; justify-content: center; gap: 20px; margin-top: 30px; }
         .word-option-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); padding: 20px 30px; border-radius: 16px; font-size: 20px; font-weight: bold; color: white; cursor: pointer; transition: all 0.2s; flex: 1; }
         .word-option-btn:hover { background: rgba(255,255,255,0.15); border-color: white; transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        /* This ensures the empty space in your HUD doesn't block the canvas */
+        #view-game {
+            pointer-events: none;
+        }
+        .glass-panel {
+            pointer-events: auto; /* Only the panels themselves should catch clicks */
+        }
+        #webgl-container canvas {
+            pointer-events: auto; /* Ensure the 3D canvas is clickable */
+        }
 
         @keyframes fadeIn { from { opacity: 0; transform: translate(-50%, -45%); } to { opacity: 1; transform: translate(-50%, -50%); } }
         @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
@@ -352,7 +362,7 @@
                 frame.position.z = -0.5; frame.castShadow = true; frame.receiveShadow = true; this.boardGroup.add(frame);
 
                 this.drawSurface = new THREE.Mesh(new THREE.PlaneGeometry(24, 12), new THREE.MeshBasicMaterial({ map: this.canvasTexture, side: THREE.DoubleSide }));
-                this.drawSurface.position.z = 0.51; 
+                this.drawSurface.position.z = 0.6; 
                 this.drawSurface.receiveShadow = true; this.boardGroup.add(this.drawSurface);
 
                 this.scene.add(this.boardGroup);
@@ -364,11 +374,15 @@
                 this.mouse.y = -(clientY / window.innerHeight) * 2 + 1;
                 this.raycaster.setFromCamera(this.mouse, this.camera);
                 const intersects = this.raycaster.intersectObject(this.drawSurface);
-                if (intersects.length > 0) return { x: Math.floor(intersects[0].uv.x * CONFIG.CANVAS_WIDTH), y: Math.floor((1 - intersects[0].uv.y) * CONFIG.CANVAS_HEIGHT) };
+// Change this line inside getTextureCoordinates:
+                if (intersects.length > 0) return { 
+                    x: Math.floor(intersects[0].uv.x * CONFIG.CANVAS_WIDTH), 
+                    y: Math.floor((1 - intersects[0].uv.y) * CONFIG.CANVAS_HEIGHT) 
+                };
                 return null;
             }
 
-                    executeDrawAction(x, y, color, size, tool, emit = true, isNewStroke = false) {
+            executeDrawAction(x, y, color, size, tool, emit = true, isNewStroke = false) {
             if (tool === 'clear') {
                 this.drawCtx.fillStyle = '#ffffff';
                 this.drawCtx.fillRect(0, 0, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT);
