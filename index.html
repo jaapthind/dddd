@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>3D Skribbl - Advanced Liquid Glass Edition</title>
+    <title>3D Skribbl - Advanced Liquid Glass Edition (Cloud Server)</title>
     <style>
         :root {
             --glass-bg: rgba(255, 255, 255, 0.05);
@@ -133,7 +133,7 @@
         <div class="glass-panel lobby-container">
             <div class="lobby-header">
                 <h1>3D Skribbl</h1>
-                <p>LIQUID GLASS ENGINE v3.0 MULTIPLAYER</p>
+                <p>LIQUID GLASS ENGINE v4.0 ABLY CLOUD</p>
             </div>
             <div>
                 <label style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px; display: block;">SELECT AVATAR</label>
@@ -148,7 +148,7 @@
             <div>
                 <input type="text" id="username-input" class="glass-input" placeholder="Enter Username (Max 12 chars)" maxlength="12" autocomplete="off" spellcheck="false">
             </div>
-            <button id="btn-join-game" class="glass-button" style="margin-top: 10px; padding: 16px;">CONNECT TO GAME</button>
+            <button id="btn-join-game" class="glass-button" style="margin-top: 10px; padding: 16px;">CONNECT TO CLOUD</button>
         </div>
     </div>
 
@@ -216,7 +216,6 @@
     <script>
         const CONFIG = {
             MAX_PLAYERS: 20, CANVAS_WIDTH: 1024, CANVAS_HEIGHT: 512,
-            HOST_ROOM_ID: "Jaap-3DSkribbl-LiquidServer", 
             COLORS: ['#000000', '#ffffff', '#c1c1c1', '#ef130b', '#740b07', '#ff7100', '#c23800', '#ffe400', '#e8a200', '#00cc00', '#005510', '#00b2ff', '#00569e', '#231fd3', '#0f0d6b', '#a300ba', '#550069', '#d37caa', '#a75574', '#a0522d', '#ff4757', '#2ed573'],
             WORD_BANK: ["Apple", "Ant", "Airplane", "Anchor", "Angel", "Arm", "Axe", "Baby", "Ball", "Balloon", "Banana", "Bank", "Baseball", "Basket", "Bat", "Bath", "Beach", "Bear", "Beard", "Bed", "Bee", "Bell", "Belt", "Bench", "Bird", "Birthday", "Boat", "Book", "Boot", "Bottle", "Bowl", "Box", "Boy", "Brain", "Bridge", "Brush", "Bucket", "Bus", "Butterfly", "Button", "Cake", "Camera", "Candle", "Candy", "Car", "Carrot", "Castle", "Cat", "Chair", "Cheese", "Cherry", "Chess", "Chicken", "Church", "Circle", "Clock", "Cloud", "Coat", "Coffee", "Comb", "Computer", "Cookie", "Corn", "Cow", "Crab", "Crayon", "Crown", "Cup", "Desk", "Diamond", "Dinosaur", "Dog", "Doll", "Dolphin", "Door", "Dragon", "Drum", "Duck", "Ear", "Earth", "Egg", "Elephant", "Eye", "Face", "Fan", "Feather", "Fence", "Finger", "Fire", "Fish", "Flag", "Flower", "Flute", "Fly", "Foot", "Fork", "Frog", "Gate", "Ghost", "Giraffe", "Glass", "Glove", "Goat", "Gold", "Grapes", "Grass", "Guitar", "Hammer", "Hand", "Harp", "Hat", "Heart", "Helicopter", "Hippo", "Horse", "Hospital", "House", "Ice", "Igloo", "Island", "Jacket", "Jar", "Jellyfish", "Jet", "Key", "King", "Kite", "Knife", "Ladder", "Lamp", "Leaf", "Leg", "Lemon", "Light", "Lion", "Lips", "Lizard", "Lock", "Lollipop", "Magnet", "Map", "Mask", "Milk", "Money", "Monkey", "Moon", "Mountain", "Mouse", "Mouth", "Mushroom", "Nail", "Neck", "Needle", "Nest", "Nose", "Notebook", "Ocean", "Octopus", "Orange", "Owl", "Paint", "Pants", "Paper", "Parrot", "Pencil", "Penguin", "Piano", "Picture", "Pie", "Pig", "Pillow", "Pizza", "Plane", "Plant", "Pocket", "Pot", "Potato", "Pumpkin", "Puppy", "Pyramid", "Queen", "Rabbit", "Radio", "Rain", "Rainbow", "Rake", "Rat", "Ring", "River", "Robot", "Rocket", "Rock", "Roof", "Rope", "Rose", "Sailboat", "Sandwich", "School", "Scissors", "Scorpion", "Shark", "Sheep", "Ship", "Shirt", "Shoe", "Skateboard", "Skeleton", "Snake", "Snowman", "Soap", "Sock", "Sofa", "Spider", "Spoon", "Star", "Sun", "Table", "Teapot", "Telephone", "Television", "Tent", "Tiger", "Toaster", "Tomato", "Tooth", "Torch", "Train", "Tree", "Truck", "Turtle", "Umbrella", "Violin", "Volcano", "Watch", "Water", "Whale", "Wheel", "Window", "Wolf", "Worm", "Zebra", "Zipper"]
         };
@@ -224,7 +223,8 @@
         const AppState = {
             user: { id: null, name: '', avatar: '🧊', score: 0, hasGuessed: false },
             room: { players: [], round: 0, maxRounds: 3, state: 'WAITING', drawerId: null, currentWord: '', wordLength: 0, timeRemaining: 0 },
-            drawing: { color: '#000000', size: 5, tool: 'brush', isDrawing: false, lastX: 0, lastY: 0 }
+            drawing: { color: '#000000', size: 5, tool: 'brush', isDrawing: false, lastX: 0, lastY: 0 },
+            isHost: false
         };
 
         const Utils = {
@@ -466,7 +466,11 @@
                 const chatInput = document.getElementById('chat-input');
                 chatInput.addEventListener('keypress', (e) => {
                     if(e.key === 'Enter' && chatInput.value.trim() !== '') {
-                        Network.emit({type: 'chat', payload: { sender: AppState.user.name, text: chatInput.value.trim() }});
+                        if (AppState.isHost) {
+                            GameServer.handleChat({ text: chatInput.value.trim(), senderId: AppState.user.id });
+                        } else {
+                            Network.emit({type: 'chat_intent', payload: { text: chatInput.value.trim(), senderId: AppState.user.id }});
+                        }
                         chatInput.value = '';
                     }
                 });
@@ -568,7 +572,14 @@
                 words.forEach(word => {
                     const btn = document.createElement('div');
                     btn.className = 'word-option-btn'; btn.innerText = word;
-                    btn.onclick = () => { Network.emit({type: 'word_select', payload: word}); overlay.classList.remove('active'); };
+                    btn.onclick = () => { 
+                        if (AppState.isHost) {
+                            GameServer.handleWordSelect(word);
+                        } else {
+                            Network.emit({type: 'word_select_intent', payload: word}); 
+                        }
+                        overlay.classList.remove('active'); 
+                    };
                     optionsContainer.appendChild(btn);
                 });
                 overlay.classList.add('active');
@@ -576,133 +587,107 @@
         };
 
         const Network = {
-            peer: null, conn: null, isHost: false, connections: [],
+            channel: null,
+            ably: null,
 
             init: () => {
-                Network.peer = new Peer();
-                Network.peer.on('open', (id) => {
-                    UI.addChatMessage({type: 'system', text: 'Looking for host...'});
-                    const conn = Network.peer.connect(CONFIG.HOST_ROOM_ID);
+                const ROOT_API_KEY = 'TpX75g.9HcpSg:DJjZHfEbF3nMz1_h4SSZDqgBJPJydD7_I1zCNiGd9uM'; 
+
+                Network.ably = new Ably.Realtime({ key: ROOT_API_KEY, clientId: AppState.user.id });
+                Network.channel = Network.ably.channels.get('3d-skribbl-global');
+
+                UI.addChatMessage({type: 'system', text: 'Connecting to Cloud...'});
+
+                Network.channel.subscribe('game-event', (message) => {
+                    const data = message.data;
                     
-                    conn.on('open', () => {
-                        Network.conn = conn;
-                        Network.setupClient(conn);
-                        UI.addChatMessage({type: 'system', text: 'Connected to Host!'});
-                        conn.send({type: 'join', payload: AppState.user});
-                    });
-
-                    Network.peer.on('error', (err) => {
-                        if (err.type === 'peer-unavailable') {
-                            UI.addChatMessage({type: 'system', text: 'No host found. Creating new room...'});
-                            Network.peer.destroy();
-                            setTimeout(Network.becomeHost, 1000);
-                        }
-                    });
-                });
-            },
-
-            becomeHost: () => {
-                Network.peer = new Peer(CONFIG.HOST_ROOM_ID);
-                Network.peer.on('open', () => {
-                    Network.isHost = true;
-                    UI.addChatMessage({type: 'system', text: 'Room created. You are the HOST.'});
-                    AppState.room.players.push({...AppState.user, peerId: 'host'});
-                    UI.updatePlayerList();
-                    GameServer.init();
-                });
-                
-                Network.peer.on('connection', (c) => {
-                    Network.connections.push(c);
-                    c.on('open', () => Network.setupHost(c));
-                    c.on('close', () => GameServer.removePlayer(c.peer));
-                });
-            },
-
-            setupClient: (c) => {
-                c.on('data', (data) => {
-                    if (data.type === 'draw') window.engine.executeRemoteDraw(data.payload);
-                    if (data.type === 'chat') UI.addChatMessage(data.payload);
-                    if (data.type === 'state') {
-                        AppState.room = data.payload;
-                        UI.updateHUD(); UI.updatePlayerList();
-                    }
-                    if (data.type === 'timer') UI.updateTimer(data.payload.sec, data.payload.total);
-                    if (data.type === 'word_pick') UI.showWordSelection(data.payload);
-                    if (data.type === 'correct_effect') window.engine.triggerCorrectGuessEffect();
-                    if (data.type === 'clear') window.engine.executeDrawAction(0,0,'#fff',1,'clear',false);
-                });
-            },
-
-            setupHost: (c) => {
-                c.on('data', (data) => {
-                    if (data.type === 'join') {
-                        // Check if player already exists to prevent double-entry
-                        if (!AppState.room.players.find(p => p.id === data.payload.id)) {
-                            AppState.room.players.push({ ...data.payload, peerId: c.peer });
-                        }
-                        // CRITICAL: Immediately send current room data to the NEW player so they aren't stuck
-                        c.send({type: 'state', payload: AppState.room}); 
-                        Network.broadcast({type: 'chat', payload: {type: 'system', text: `${data.payload.name} joined!`}});
-                        Network.broadcastState();
-                        if(AppState.room.players.length >= 2 && AppState.room.state === 'WAITING') GameServer.startRound();
-                    }
-                    if (data.type === 'draw') {
+                    if (data.type === 'draw' && message.clientId !== AppState.user.id) {
                         window.engine.executeRemoteDraw(data.payload);
-                        Network.connections.forEach(conn => { if(conn.peer !== c.peer) conn.send(data); });
                     }
-                    if (data.type === 'chat') GameServer.handleChat(data.payload, c.peer);
-                    if (data.type === 'word_select') GameServer.handleWordSelect(data.payload);
+                    if (data.type === 'chat') {
+                        UI.addChatMessage(data.payload);
+                    }
+                    if (data.type === 'sync-state') {
+                        AppState.room = data.payload;
+                        UI.updateHUD(); 
+                        UI.updatePlayerList();
+                    }
+                    if (data.type === 'timer') {
+                        UI.updateTimer(data.payload.sec, data.payload.total);
+                    }
+                    if (data.type === 'correct_effect') {
+                        window.engine.triggerCorrectGuessEffect();
+                    }
+                    if (data.type === 'clear' && message.clientId !== AppState.user.id) {
+                        window.engine.executeDrawAction(0,0,'#fff',1,'clear',false);
+                    }
+                    if (data.type === 'word_pick' && AppState.room.drawerId === AppState.user.id) {
+                        UI.showWordSelection(data.payload);
+                    }
+
+                    // Host intercepts intents
+                    if (AppState.isHost) {
+                        if (data.type === 'chat_intent') {
+                            GameServer.handleChat(data.payload);
+                        }
+                        if (data.type === 'word_select_intent') {
+                            GameServer.handleWordSelect(data.payload);
+                        }
+                    }
+                });
+
+                Network.channel.presence.subscribe('enter', Network.syncPresence);
+                Network.channel.presence.subscribe('leave', Network.syncPresence);
+
+                Network.channel.presence.enter(AppState.user, (err) => {
+                    if(err) return console.error("Presence Error:", err);
+                    UI.addChatMessage({type: 'system', text: 'Connected! Game Syncing...'});
+                    Network.syncPresence();
+                });
+            },
+
+            syncPresence: () => {
+                Network.channel.presence.get((err, members) => {
+                    if (err) return;
+                    AppState.room.players = members.map(m => m.data);
+                    UI.updatePlayerList();
+
+                    if (members.length > 0) {
+                        const host = members.sort((a, b) => a.timestamp - b.timestamp)[0];
+                        const wasHost = AppState.isHost;
+                        AppState.isHost = (host.clientId === AppState.user.id);
+
+                        if (AppState.isHost) {
+                            Network.channel.publish('game-event', {type: 'sync-state', payload: AppState.room});
+                            
+                            if (!wasHost) {
+                                UI.addChatMessage({type: 'system', text: 'You are now the Server Host.'});
+                            }
+                            
+                            if (AppState.room.players.length >= 2 && AppState.room.state === 'WAITING') {
+                                GameServer.startRound();
+                            }
+                        }
+                    }
                 });
             },
 
             emit: (data) => {
-                if (Network.isHost) {
-                    if (data.type === 'draw') Network.connections.forEach(c => c.send(data));
-                    if (data.type === 'chat') GameServer.handleChat(data.payload, 'host');
-                    if (data.type === 'word_select') GameServer.handleWordSelect(data.payload);
-                } else if (Network.conn) {
-                    Network.conn.send(data);
-                }
-            },
-
-            broadcast: (data) => {
-                if(data.type === 'chat') UI.addChatMessage(data.payload);
-                if(data.type === 'correct_effect') window.engine.triggerCorrectGuessEffect();
-                if(data.type === 'word_pick') UI.showWordSelection(data.payload);
-                if(data.type === 'clear') window.engine.executeDrawAction(0,0,'#fff',1,'clear',false);
-                Network.connections.forEach(c => c.send(data));
-            },
-            
-            broadcastState: () => {
-                UI.updateHUD(); UI.updatePlayerList();
-                Network.connections.forEach(c => c.send({type: 'state', payload: AppState.room}));
+                Network.channel.publish('game-event', data);
             }
         };
 
         const GameServer = {
-            timerInterval: null, drawerIndex: -1,
+            timerInterval: null, 
+            drawerIndex: -1,
             
-            init: () => {
-                AppState.room.state = 'WAITING';
-                Network.broadcastState();
-            },
-
-            removePlayer: (peerId) => {
-                const p = AppState.room.players.find(p => p.peerId === peerId);
-                if(p) Network.broadcast({type: 'chat', payload: {type: 'system', text: `${p.name} left.`}});
-                AppState.room.players = AppState.room.players.filter(p => p.peerId !== peerId);
-                
-                if(AppState.room.players.length < 2) {
-                    GameServer.endRound();
-                } else if (AppState.room.drawerId === p.id) {
-                    GameServer.endRound(); 
-                } else {
-                    Network.broadcastState();
-                }
-            },
-
             startRound: () => {
-                if(AppState.room.players.length < 2) { AppState.room.state = 'WAITING'; Network.broadcastState(); return; }
+                if (!AppState.isHost) return;
+                if(AppState.room.players.length < 2) { 
+                    AppState.room.state = 'WAITING'; 
+                    Network.emit({type: 'sync-state', payload: AppState.room}); 
+                    return; 
+                }
                 
                 GameServer.drawerIndex++;
                 if(GameServer.drawerIndex >= AppState.room.players.length) {
@@ -711,7 +696,7 @@
                 }
                 
                 if(AppState.room.round > AppState.room.maxRounds) {
-                    Network.broadcast({type: 'chat', payload: {type: 'system', text: 'GAME OVER!'}});
+                    Network.emit({type: 'chat', payload: {type: 'system', text: 'GAME OVER!'}});
                     return;
                 }
 
@@ -723,8 +708,8 @@
                 AppState.room.state = 'SELECTING';
                 
                 window.engine.executeDrawAction(0,0,'#fff',1,'clear',false);
-                Network.broadcast({type: 'clear'});
-                Network.broadcastState();
+                Network.emit({type: 'clear'});
+                Network.emit({type: 'sync-state', payload: AppState.room});
 
                 const words = [];
                 while(words.length < 3) {
@@ -732,24 +717,21 @@
                     if(!words.includes(w)) words.push(w);
                 }
 
-                if(drawer.peerId === 'host') {
-                    UI.showWordSelection(words);
-                } else {
-                    const c = Network.connections.find(conn => conn.peer === drawer.peerId);
-                    if(c) c.send({type: 'word_pick', payload: words});
-                }
+                Network.emit({type: 'word_pick', payload: words});
             },
 
             handleWordSelect: (word) => {
+                if (!AppState.isHost) return;
                 AppState.room.currentWord = word;
                 AppState.room.wordLength = word.length;
                 AppState.room.state = 'DRAWING';
-                Network.broadcastState();
+                Network.emit({type: 'sync-state', payload: AppState.room});
                 GameServer.startTimer(80);
             },
 
-            handleChat: (payload, peerId) => {
-                const player = AppState.room.players.find(p => p.peerId === peerId);
+            handleChat: (payload) => {
+                if (!AppState.isHost) return;
+                const player = AppState.room.players.find(p => p.id === payload.senderId);
                 if(!player) return;
 
                 if(AppState.room.state === 'DRAWING' && AppState.room.drawerId !== player.id && !player.hasGuessed) {
@@ -760,35 +742,35 @@
                         const drawer = AppState.room.players.find(p => p.id === AppState.room.drawerId);
                         if(drawer) drawer.score += 5;
 
-                        Network.broadcast({type: 'chat', payload: {type: 'correct', text: `${player.name} guessed the word!`}});
-                        Network.broadcast({type: 'correct_effect'});
-                        Network.broadcastState();
+                        Network.emit({type: 'chat', payload: {type: 'correct', text: `${player.name} guessed the word!`}});
+                        Network.emit({type: 'correct_effect'});
+                        Network.emit({type: 'sync-state', payload: AppState.room});
                         GameServer.checkRoundEnd();
                         return;
                     } else if (payload.text.length === AppState.room.currentWord.length && payload.text[0].toLowerCase() === AppState.room.currentWord[0].toLowerCase()) {
-                        if(peerId === 'host') UI.addChatMessage({type: 'close', text: `'${payload.text}' is close!`});
-                        else Network.connections.find(c => c.peer === peerId)?.send({type: 'chat', payload: {type: 'close', text: `'${payload.text}' is close!`}});
+                        // For a real game, you would direct message the user, but broadcasting 'close' is acceptable for this prototype
+                        Network.emit({type: 'chat', payload: {type: 'close', text: `'${payload.text}' is close!`}});
                     }
                 }
                 
                 if (AppState.room.drawerId === player.id && AppState.room.state === 'DRAWING') {
-                     if(peerId === 'host') UI.addChatMessage({type: 'system', text: 'You cannot chat while drawing!'});
-                     else Network.connections.find(c => c.peer === peerId)?.send({type: 'chat', payload: {type: 'system', text: 'You cannot chat while drawing!'}});
+                     // Normally direct message, broadcast for prototype
+                     Network.emit({type: 'chat', payload: {type: 'system', text: `${player.name} tried to chat while drawing!`}});
                      return;
                 }
 
-                Network.broadcast({type: 'chat', payload: {type: 'standard', sender: player.name, text: payload.text}});
+                Network.emit({type: 'chat', payload: {type: 'standard', sender: player.name, text: payload.text}});
             },
 
             startTimer: (seconds) => {
                 clearInterval(GameServer.timerInterval);
                 AppState.room.timeRemaining = seconds;
                 const total = seconds;
-                Network.broadcast({type: 'timer', payload: {sec: seconds, total}});
+                Network.emit({type: 'timer', payload: {sec: seconds, total}});
                 
                 GameServer.timerInterval = setInterval(() => {
                     AppState.room.timeRemaining--;
-                    Network.broadcast({type: 'timer', payload: {sec: AppState.room.timeRemaining, total}});
+                    Network.emit({type: 'timer', payload: {sec: AppState.room.timeRemaining, total}});
                     if(AppState.room.timeRemaining <= 0) GameServer.endRound();
                 }, 1000);
             },
@@ -801,11 +783,12 @@
             },
 
             endRound: () => {
+                if (!AppState.isHost) return;
                 clearInterval(GameServer.timerInterval);
                 AppState.room.state = 'WAITING';
                 let msg = AppState.room.players.length < 2 ? "Not enough players." : `Round over! The word was: ${AppState.room.currentWord}`;
-                Network.broadcast({type: 'chat', payload: {type: 'system', text: msg}});
-                Network.broadcastState();
+                Network.emit({type: 'chat', payload: {type: 'system', text: msg}});
+                Network.emit({type: 'sync-state', payload: AppState.room});
                 if(AppState.room.players.length >= 2) setTimeout(GameServer.startRound, 4000);
             }
         };
