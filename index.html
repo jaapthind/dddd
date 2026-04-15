@@ -6,9 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>3D Skribbl - Advanced Liquid Glass Edition</title>
     <style>
-        /* ==========================================================================
-           CORE STYLES & VARIABLES
-           ========================================================================== */
         :root {
             --glass-bg: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.15);
@@ -24,191 +21,41 @@
             --bg-dark: #070b14;
         }
 
-        * {
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-drag: none;
-        }
+        * { box-sizing: border-box; user-select: none; -webkit-user-drag: none; }
+        body, html { margin: 0; padding: 0; width: 100vw; height: 100vh; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-dark); color: var(--text-main); }
+        
+        #webgl-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
 
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-        }
-
-        /* ==========================================================================
-           3D CANVAS CONTAINER
-           ========================================================================== */
-        #webgl-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 1;
-        }
-
-        /* ==========================================================================
-           LIQUID GLASS UI UTILITIES
-           ========================================================================== */
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-            border-radius: 24px;
-            position: absolute;
-            z-index: 10;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            overflow: hidden;
-        }
-
-        .glass-panel::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
-            z-index: 2;
-        }
-
-        .glass-button {
-            background: linear-gradient(135deg, rgba(0, 254, 186, 0.2), rgba(91, 84, 250, 0.2));
-            border: 1px solid var(--glass-border);
-            color: var(--text-main);
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(10px);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            outline: none;
-        }
-
-        .glass-button:hover {
-            background: linear-gradient(135deg, rgba(0, 254, 186, 0.4), rgba(91, 84, 250, 0.4));
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 254, 186, 0.2);
-            border-color: var(--accent-primary);
-        }
-
-        .glass-button:active {
-            transform: translateY(1px);
-        }
-
-        .glass-input {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--glass-border);
-            color: var(--text-main);
-            padding: 14px 20px;
-            border-radius: 12px;
-            font-size: 16px;
-            width: 100%;
-            transition: all 0.2s ease;
-            outline: none;
-        }
-
-        .glass-input:focus {
-            background: rgba(0, 0, 0, 0.4);
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 10px rgba(0, 254, 186, 0.2);
-        }
-
-        .glass-input::placeholder {
-            color: var(--text-muted);
-        }
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); border-radius: 24px; position: absolute; z-index: 10; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); overflow: hidden; }
+        .glass-panel::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent); z-index: 2; }
+        
+        .glass-button { background: linear-gradient(135deg, rgba(0, 254, 186, 0.2), rgba(91, 84, 250, 0.2)); border: 1px solid var(--glass-border); color: var(--text-main); padding: 12px 24px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(10px); text-transform: uppercase; letter-spacing: 1px; outline: none; }
+        .glass-button:hover { background: linear-gradient(135deg, rgba(0, 254, 186, 0.4), rgba(91, 84, 250, 0.4)); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0, 254, 186, 0.2); border-color: var(--accent-primary); }
+        .glass-button:active { transform: translateY(1px); }
+        
+        .glass-input { background: rgba(0, 0, 0, 0.2); border: 1px solid var(--glass-border); color: var(--text-main); padding: 14px 20px; border-radius: 12px; font-size: 16px; width: 100%; transition: all 0.2s ease; outline: none; }
+        .glass-input:focus { background: rgba(0, 0, 0, 0.4); border-color: var(--accent-primary); box-shadow: 0 0 10px rgba(0, 254, 186, 0.2); }
+        .glass-input::placeholder { color: var(--text-muted); }
 
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { 
-            background: rgba(255,255,255,0.2); 
-            border-radius: 10px; 
-            border: 2px solid transparent;
-            background-clip: padding-box;
-        }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; border: 2px solid transparent; background-clip: padding-box; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); border: 2px solid transparent; background-clip: padding-box;}
 
-        /* ==========================================================================
-           VIEW CONTROLLERS
-           ========================================================================== */
-        .view-state {
-            display: none;
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0; left: 0;
-            pointer-events: none;
-        }
+        .view-state { display: none; width: 100%; height: 100%; position: absolute; top: 0; left: 0; pointer-events: none; }
+        .view-state.active { display: block; }
+        .interactive-layer { pointer-events: auto; }
 
-        .view-state.active {
-            display: block;
-        }
-
-        .interactive-layer {
-            pointer-events: auto;
-        }
-
-        /* ==========================================================================
-           LOBBY VIEW
-           ========================================================================== */
-        #view-lobby {
-            z-index: 100;
-            background: radial-gradient(circle at center, rgba(15, 23, 42, 0.8) 0%, rgba(7, 11, 20, 1) 100%);
-            backdrop-filter: blur(10px);
-            pointer-events: auto;
-        }
-
-        .lobby-container {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 450px;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            animation: fadeIn 0.5s ease;
-        }
-
+        #view-lobby { z-index: 100; background: radial-gradient(circle at center, rgba(15, 23, 42, 0.8) 0%, rgba(7, 11, 20, 1) 100%); backdrop-filter: blur(10px); pointer-events: auto; }
+        .lobby-container { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 450px; padding: 40px; display: flex; flex-direction: column; gap: 20px; animation: fadeIn 0.5s ease; }
         .lobby-header { text-align: center; margin-bottom: 20px; }
-        .lobby-header h1 {
-            font-size: 36px; margin: 0;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
+        .lobby-header h1 { font-size: 36px; margin: 0; background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px; text-transform: uppercase; }
         .lobby-header p { color: var(--text-muted); margin: 10px 0 0 0; font-size: 14px; }
-
         .avatar-selector { display: flex; justify-content: center; gap: 15px; margin-bottom: 10px; }
-        .avatar-option {
-            width: 50px; height: 50px; border-radius: 12px;
-            border: 2px solid var(--glass-border); cursor: pointer; transition: all 0.2s;
-            display: flex; align-items: center; justify-content: center; font-size: 24px;
-            background: rgba(0,0,0,0.3);
-        }
-        .avatar-option.selected {
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 15px rgba(0, 254, 186, 0.4); transform: scale(1.1);
-        }
+        .avatar-option { width: 50px; height: 50px; border-radius: 12px; border: 2px solid var(--glass-border); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; font-size: 24px; background: rgba(0,0,0,0.3); }
+        .avatar-option.selected { border-color: var(--accent-primary); box-shadow: 0 0 15px rgba(0, 254, 186, 0.4); transform: scale(1.1); }
 
-        /* ==========================================================================
-           GAME VIEW UI COMPONENTS
-           ========================================================================== */
-        .hud-top {
-            position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
-            width: 80%; max-width: 1000px; height: 70px; display: flex;
-            justify-content: space-between; align-items: center; padding: 0 30px;
-        }
+        .hud-top { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 80%; max-width: 1000px; height: 70px; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; }
         .hud-round-info { display: flex; flex-direction: column; align-items: flex-start; }
         .round-text { font-size: 18px; font-weight: bold; color: var(--accent-primary); }
         .drawer-text { font-size: 12px; color: var(--text-muted); }
@@ -286,7 +133,7 @@
         <div class="glass-panel lobby-container">
             <div class="lobby-header">
                 <h1>3D Skribbl</h1>
-                <p>LIQUID GLASS ENGINE v2.5.5</p>
+                <p>LIQUID GLASS ENGINE v3.0 MULTIPLAYER</p>
             </div>
             <div>
                 <label style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px; display: block;">SELECT AVATAR</label>
@@ -301,7 +148,7 @@
             <div>
                 <input type="text" id="username-input" class="glass-input" placeholder="Enter Username (Max 12 chars)" maxlength="12" autocomplete="off" spellcheck="false">
             </div>
-            <button id="btn-join-game" class="glass-button" style="margin-top: 10px; padding: 16px;">CONNECT TO GLOBAL SERVER</button>
+            <button id="btn-join-game" class="glass-button" style="margin-top: 10px; padding: 16px;">CONNECT TO GAME</button>
         </div>
     </div>
 
@@ -334,7 +181,7 @@
 
         <div class="glass-panel sidebar-right interactive-layer">
             <div class="chat-messages" id="ui-chat-messages">
-                <div class="chat-msg system">Connecting to networking...</div>
+                <div class="chat-msg system">Connecting to network...</div>
             </div>
             <div class="chat-input-area">
                 <input type="text" id="chat-input" placeholder="Type your guess here..." autocomplete="off" disabled>
@@ -369,6 +216,7 @@
     <script>
         const CONFIG = {
             MAX_PLAYERS: 20, CANVAS_WIDTH: 1024, CANVAS_HEIGHT: 512,
+            HOST_ROOM_ID: "Jaap-3DSkribbl-LiquidServer", 
             COLORS: ['#000000', '#ffffff', '#c1c1c1', '#ef130b', '#740b07', '#ff7100', '#c23800', '#ffe400', '#e8a200', '#00cc00', '#005510', '#00b2ff', '#00569e', '#231fd3', '#0f0d6b', '#a300ba', '#550069', '#d37caa', '#a75574', '#a0522d', '#ff4757', '#2ed573'],
             WORD_BANK: ["Apple", "Ant", "Airplane", "Anchor", "Angel", "Arm", "Axe", "Baby", "Ball", "Balloon", "Banana", "Bank", "Baseball", "Basket", "Bat", "Bath", "Beach", "Bear", "Beard", "Bed", "Bee", "Bell", "Belt", "Bench", "Bird", "Birthday", "Boat", "Book", "Boot", "Bottle", "Bowl", "Box", "Boy", "Brain", "Bridge", "Brush", "Bucket", "Bus", "Butterfly", "Button", "Cake", "Camera", "Candle", "Candy", "Car", "Carrot", "Castle", "Cat", "Chair", "Cheese", "Cherry", "Chess", "Chicken", "Church", "Circle", "Clock", "Cloud", "Coat", "Coffee", "Comb", "Computer", "Cookie", "Corn", "Cow", "Crab", "Crayon", "Crown", "Cup", "Desk", "Diamond", "Dinosaur", "Dog", "Doll", "Dolphin", "Door", "Dragon", "Drum", "Duck", "Ear", "Earth", "Egg", "Elephant", "Eye", "Face", "Fan", "Feather", "Fence", "Finger", "Fire", "Fish", "Flag", "Flower", "Flute", "Fly", "Foot", "Fork", "Frog", "Gate", "Ghost", "Giraffe", "Glass", "Glove", "Goat", "Gold", "Grapes", "Grass", "Guitar", "Hammer", "Hand", "Harp", "Hat", "Heart", "Helicopter", "Hippo", "Horse", "Hospital", "House", "Ice", "Igloo", "Island", "Jacket", "Jar", "Jellyfish", "Jet", "Key", "King", "Kite", "Knife", "Ladder", "Lamp", "Leaf", "Leg", "Lemon", "Light", "Lion", "Lips", "Lizard", "Lock", "Lollipop", "Magnet", "Map", "Mask", "Milk", "Money", "Monkey", "Moon", "Mountain", "Mouse", "Mouth", "Mushroom", "Nail", "Neck", "Needle", "Nest", "Nose", "Notebook", "Ocean", "Octopus", "Orange", "Owl", "Paint", "Pants", "Paper", "Parrot", "Pencil", "Penguin", "Piano", "Picture", "Pie", "Pig", "Pillow", "Pizza", "Plane", "Plant", "Pocket", "Pot", "Potato", "Pumpkin", "Puppy", "Pyramid", "Queen", "Rabbit", "Radio", "Rain", "Rainbow", "Rake", "Rat", "Ring", "River", "Robot", "Rocket", "Rock", "Roof", "Rope", "Rose", "Sailboat", "Sandwich", "School", "Scissors", "Scorpion", "Shark", "Sheep", "Ship", "Shirt", "Shoe", "Skateboard", "Skeleton", "Snake", "Snowman", "Soap", "Sock", "Sofa", "Spider", "Spoon", "Star", "Sun", "Table", "Teapot", "Telephone", "Television", "Tent", "Tiger", "Toaster", "Tomato", "Tooth", "Torch", "Train", "Tree", "Truck", "Turtle", "Umbrella", "Violin", "Volcano", "Watch", "Water", "Whale", "Wheel", "Window", "Wolf", "Worm", "Zebra", "Zipper"]
         };
@@ -503,7 +351,7 @@
                 frame.position.z = -0.5; frame.castShadow = true; frame.receiveShadow = true; this.boardGroup.add(frame);
 
                 this.drawSurface = new THREE.Mesh(new THREE.PlaneGeometry(24, 12), new THREE.MeshBasicMaterial({ map: this.canvasTexture, side: THREE.DoubleSide }));
-                this.drawSurface.position.z = 0.02; // Fixed Z-Fighting Glitch
+                this.drawSurface.position.z = 0.02; 
                 this.drawSurface.receiveShadow = true; this.boardGroup.add(this.drawSurface);
 
                 this.scene.add(this.boardGroup);
@@ -612,7 +460,7 @@
                     AppState.user.id = Utils.generateId();
                     document.getElementById('view-lobby').classList.remove('active');
                     document.getElementById('view-game').classList.add('active');
-                    Network.connect();
+                    Network.init();
                 });
 
                 const chatInput = document.getElementById('chat-input');
@@ -730,42 +578,43 @@
         const Network = {
             peer: null, conn: null, isHost: false, connections: [],
 
-            connect: () => {
-                const roomId = "JaapThind-3D-Skribbl-Global"; 
+            init: () => {
                 Network.peer = new Peer();
-                
                 Network.peer.on('open', (id) => {
-                    const conn = Network.peer.connect(roomId);
-                    let connectedToHost = false;
-
+                    UI.addChatMessage({type: 'system', text: 'Looking for host...'});
+                    const conn = Network.peer.connect(CONFIG.HOST_ROOM_ID);
+                    
                     conn.on('open', () => {
-                        connectedToHost = true;
                         Network.conn = conn;
                         Network.setupClient(conn);
                         UI.addChatMessage({type: 'system', text: 'Connected to Host!'});
                         conn.send({type: 'join', payload: AppState.user});
                     });
 
-                    setTimeout(() => {
-                        if (!connectedToHost) {
+                    Network.peer.on('error', (err) => {
+                        if (err.type === 'peer-unavailable') {
+                            UI.addChatMessage({type: 'system', text: 'No host found. Creating new room...'});
                             Network.peer.destroy();
-                            setTimeout(() => {
-                                Network.peer = new Peer(roomId);
-                                Network.peer.on('open', () => {
-                                    Network.isHost = true;
-                                    UI.addChatMessage({type: 'system', text: 'You are the HOST.'});
-                                    AppState.room.players.push({...AppState.user, peerId: 'host'});
-                                    UI.updatePlayerList();
-                                    GameServer.init();
-                                });
-                                Network.peer.on('connection', (c) => {
-                                    Network.connections.push(c);
-                                    c.on('open', () => Network.setupHost(c));
-                                    c.on('close', () => GameServer.removePlayer(c.peer));
-                                });
-                            }, 1000);
+                            setTimeout(Network.becomeHost, 1000);
                         }
-                    }, 2500);
+                    });
+                });
+            },
+
+            becomeHost: () => {
+                Network.peer = new Peer(CONFIG.HOST_ROOM_ID);
+                Network.peer.on('open', () => {
+                    Network.isHost = true;
+                    UI.addChatMessage({type: 'system', text: 'Room created. You are the HOST.'});
+                    AppState.room.players.push({...AppState.user, peerId: 'host'});
+                    UI.updatePlayerList();
+                    GameServer.init();
+                });
+                
+                Network.peer.on('connection', (c) => {
+                    Network.connections.push(c);
+                    c.on('open', () => Network.setupHost(c));
+                    c.on('close', () => GameServer.removePlayer(c.peer));
                 });
             },
 
@@ -780,6 +629,7 @@
                     if (data.type === 'timer') UI.updateTimer(data.payload.sec, data.payload.total);
                     if (data.type === 'word_pick') UI.showWordSelection(data.payload);
                     if (data.type === 'correct_effect') window.engine.triggerCorrectGuessEffect();
+                    if (data.type === 'clear') window.engine.executeDrawAction(0,0,'#fff',1,'clear',false);
                 });
             },
 
@@ -814,6 +664,7 @@
                 if(data.type === 'chat') UI.addChatMessage(data.payload);
                 if(data.type === 'correct_effect') window.engine.triggerCorrectGuessEffect();
                 if(data.type === 'word_pick') UI.showWordSelection(data.payload);
+                if(data.type === 'clear') window.engine.executeDrawAction(0,0,'#fff',1,'clear',false);
                 Network.connections.forEach(c => c.send(data));
             },
             
@@ -832,8 +683,17 @@
             },
 
             removePlayer: (peerId) => {
+                const p = AppState.room.players.find(p => p.peerId === peerId);
+                if(p) Network.broadcast({type: 'chat', payload: {type: 'system', text: `${p.name} left.`}});
                 AppState.room.players = AppState.room.players.filter(p => p.peerId !== peerId);
-                Network.broadcastState();
+                
+                if(AppState.room.players.length < 2) {
+                    GameServer.endRound();
+                } else if (AppState.room.drawerId === p.id) {
+                    GameServer.endRound(); 
+                } else {
+                    Network.broadcastState();
+                }
             },
 
             startRound: () => {
@@ -850,12 +710,15 @@
                     return;
                 }
 
+                if(AppState.room.round === 0) AppState.room.round = 1;
+
                 AppState.room.players.forEach(p => p.hasGuessed = false);
                 const drawer = AppState.room.players[GameServer.drawerIndex];
                 AppState.room.drawerId = drawer.id;
                 AppState.room.state = 'SELECTING';
                 
-                window.engine.executeDrawAction(0,0,'#fff',1,'clear',true);
+                window.engine.executeDrawAction(0,0,'#fff',1,'clear',false);
+                Network.broadcast({type: 'clear'});
                 Network.broadcastState();
 
                 const words = [];
@@ -927,22 +790,22 @@
 
             checkRoundEnd: () => {
                 const nonDrawers = AppState.room.players.filter(p => p.id !== AppState.room.drawerId);
-                if(nonDrawers.every(p => p.hasGuessed)) GameServer.endRound();
+                if(nonDrawers.length > 0 && nonDrawers.every(p => p.hasGuessed)) {
+                    GameServer.endRound();
+                }
             },
 
             endRound: () => {
                 clearInterval(GameServer.timerInterval);
                 AppState.room.state = 'WAITING';
-                Network.broadcast({type: 'chat', payload: {type: 'system', text: `Round over! The word was: ${AppState.room.currentWord}`}});
+                let msg = AppState.room.players.length < 2 ? "Not enough players." : `Round over! The word was: ${AppState.room.currentWord}`;
+                Network.broadcast({type: 'chat', payload: {type: 'system', text: msg}});
                 Network.broadcastState();
-                setTimeout(GameServer.startRound, 4000);
+                if(AppState.room.players.length >= 2) setTimeout(GameServer.startRound, 4000);
             }
         };
 
-        window.onload = () => {
-            window.engine = new Engine3D();
-            UI.init();
-        };
+        window.onload = () => { window.engine = new Engine3D(); UI.init(); };
     </script>
 </body>
 </html>
