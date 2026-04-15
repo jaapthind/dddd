@@ -377,6 +377,8 @@
                 this.boardGroup.add(this.sensorPlane);
             
                 this.scene.add(this.boardGroup);
+                this.sensorPlane.updateMatrixWorld();
+                this.drawSurface.updateMatrixWorld();
             }
 
                         getTextureCoordinates(clientX, clientY) {
@@ -385,13 +387,12 @@
                 this.raycaster.setFromCamera(this.mouse, this.camera);
                 
                 // CHANGE THIS LINE: Intersect the sensorPlane, not the drawSurface
-                const intersects = this.raycaster.intersectObject(this.sensorPlane);
-                
+// Inside getTextureCoordinates, make sure it's exactly this:
+            const intersects = this.raycaster.intersectObject(this.sensorPlane, false); // Add 'false' to stop it from looking at children                
                 if (intersects.length > 0) {
                     return { 
                         x: Math.floor(intersects[0].uv.x * CONFIG.CANVAS_WIDTH), 
-                        y: Math.floor((1 - intersects[0].uv.y) * CONFIG.CANVAS_HEIGHT) 
-                    };
+                        y: Math.floor(intersects[0].uv.y * CONFIG.CANVAS_HEIGHT) // Remove the (1 - ...)                    };
                 }
                 return null;
             }
