@@ -117,15 +117,19 @@
         .word-option-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); padding: 20px 30px; border-radius: 16px; font-size: 20px; font-weight: bold; color: white; cursor: pointer; transition: all 0.2s; flex: 1; }
         .word-option-btn:hover { background: rgba(255,255,255,0.15); border-color: white; transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
         /* This ensures the empty space in your HUD doesn't block the canvas */
-        #view-game {
-            pointer-events: none;
-        }
-        .glass-panel {
-            pointer-events: auto; /* Only the panels themselves should catch clicks */
-        }
-        #webgl-container canvas {
-            pointer-events: auto; /* Ensure the 3D canvas is clickable */
-        }
+        /* Fix for the 10% success rate: Stop UI from blocking the board */
+            .hud-top, .sidebar-left, .sidebar-right, .view-state {
+                pointer-events: none !important;
+            }
+            
+            /* Allow actual buttons to still be clicked */
+            .glass-panel, .interactive-layer, button, input, .color-swatch, .tool-btn, .word-option-btn {
+                pointer-events: auto !important;
+            }
+            
+            #webgl-container canvas {
+                pointer-events: auto !important;
+            }
 
         @keyframes fadeIn { from { opacity: 0; transform: translate(-50%, -45%); } to { opacity: 1; transform: translate(-50%, -50%); } }
         @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
@@ -353,32 +357,42 @@
                 this.scene.add(geoGroup);
             }
 
-            setupDrawingBoard() {
+                        setupDrawingBoard() {
                 this.boardGroup = new THREE.Group();
-                const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 2, 10, 8), new THREE.MeshStandardMaterial({color: 0x111111}));
-                stand.position.set(0, -15, -5); stand.castShadow = true; this.boardGroup.add(stand);
-
-                const frame = new THREE.Mesh(new THREE.BoxGeometry(25, 13, 1), new THREE.MeshPhysicalMaterial({ color: 0x222222, metalness: 0.8, roughness: 0.2, clearcoat: 1.0, clearcoatRoughness: 0.1 }));
-                frame.position.z = -0.5; frame.castShadow = true; frame.receiveShadow = true; this.boardGroup.add(frame);
-
-                this.drawSurface = new THREE.Mesh(new THREE.PlaneGeometry(24, 12), new THREE.MeshBasicMaterial({ map: this.canvasTexture, side: THREE.DoubleSide }));
-                this.drawSurface.position.z = 0.6; 
-                this.drawSurface.receiveShadow = true; this.boardGroup.add(this.drawSurface);
-
+            
+                // 1. The Visual Board (Keep this)
+                this.drawSurface = new THREE.Mesh(
+                    new THREE.PlaneGeometry(24, 12),
+                    new THREE.MeshBasicMaterial({ map: this.canvasTexture })
+                );
+                this.drawSurface.position.z = 0.3; 
+                this.boardGroup.add(this.drawSurface);
+            
+                // 2. THE FIX: The Invisible Sensor (The Hitbox)
+                // We make this invisible and put it slightly in front
+                const sensorGeo = new THREE.PlaneGeometry(24, 12); 
+                const sensorMat = new THREE.MeshBasicMaterial({ visible: false });
+                this.sensorPlane = new THREE.Mesh(sensorGeo, sensorMat);
+                this.sensorPlane.position.z = 0.31; 
+                this.boardGroup.add(this.sensorPlane);
+            
                 this.scene.add(this.boardGroup);
-                this.boardGroup.rotation.x = -0.05;
             }
 
-            getTextureCoordinates(clientX, clientY) {
+                        getTextureCoordinates(clientX, clientY) {
                 this.mouse.x = (clientX / window.innerWidth) * 2 - 1;
                 this.mouse.y = -(clientY / window.innerHeight) * 2 + 1;
                 this.raycaster.setFromCamera(this.mouse, this.camera);
-                const intersects = this.raycaster.intersectObject(this.drawSurface);
-// Change this line inside getTextureCoordinates:
-                if (intersects.length > 0) return { 
-                    x: Math.floor(intersects[0].uv.x * CONFIG.CANVAS_WIDTH), 
-                    y: Math.floor((1 - intersects[0].uv.y) * CONFIG.CANVAS_HEIGHT) 
-                };
+                
+                // CHANGE THIS LINE: Intersect the sensorPlane, not the drawSurface
+                const intersects = this.raycaster.intersectObject(this.sensorPlane);
+                
+                if (intersects.length > 0) {
+                    return { 
+                        x: Math.floor(intersects[0].uv.x * CONFIG.CANVAS_WIDTH), 
+                        y: Math.floor((1 - intersects[0].uv.y) * CONFIG.CANVAS_HEIGHT) 
+                    };
+                }
                 return null;
             }
 
