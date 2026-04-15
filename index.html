@@ -636,7 +636,12 @@
             setupHost: (c) => {
                 c.on('data', (data) => {
                     if (data.type === 'join') {
-                        AppState.room.players.push({ ...data.payload, peerId: c.peer });
+                        // Check if player already exists to prevent double-entry
+                        if (!AppState.room.players.find(p => p.id === data.payload.id)) {
+                            AppState.room.players.push({ ...data.payload, peerId: c.peer });
+                        }
+                        // CRITICAL: Immediately send current room data to the NEW player so they aren't stuck
+                        c.send({type: 'state', payload: AppState.room}); 
                         Network.broadcast({type: 'chat', payload: {type: 'system', text: `${data.payload.name} joined!`}});
                         Network.broadcastState();
                         if(AppState.room.players.length >= 2 && AppState.room.state === 'WAITING') GameServer.startRound();
