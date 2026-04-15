@@ -352,7 +352,7 @@
                 frame.position.z = -0.5; frame.castShadow = true; frame.receiveShadow = true; this.boardGroup.add(frame);
 
                 this.drawSurface = new THREE.Mesh(new THREE.PlaneGeometry(24, 12), new THREE.MeshBasicMaterial({ map: this.canvasTexture, side: THREE.DoubleSide }));
-                this.drawSurface.position.z = 0.02; 
+                this.drawSurface.position.z = 0.51; 
                 this.drawSurface.receiveShadow = true; this.boardGroup.add(this.drawSurface);
 
                 this.scene.add(this.boardGroup);
@@ -368,39 +368,46 @@
                 return null;
             }
 
-            executeDrawAction(x, y, color, size, tool, emit = true, isNewStroke = false) {
-                if (tool === 'clear') {
-                    this.drawCtx.fillStyle = '#ffffff';
-                    this.drawCtx.fillRect(0, 0, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT);
-                } else if (tool === 'fill') {
-                    Utils.floodFill(this.drawCtx, x, y, color);
+                    executeDrawAction(x, y, color, size, tool, emit = true, isNewStroke = false) {
+            if (tool === 'clear') {
+                this.drawCtx.fillStyle = '#ffffff';
+                this.drawCtx.fillRect(0, 0, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT);
+            } else if (tool === 'fill') {
+                Utils.floodFill(this.drawCtx, x, y, color);
+            } else {
+                this.drawCtx.lineCap = 'round'; 
+                this.drawCtx.lineJoin = 'round';
+                this.drawCtx.lineWidth = size; 
+                this.drawCtx.strokeStyle = tool === 'erase' ? '#ffffff' : color;
+                
+                this.drawCtx.beginPath();
+                // IF it's the start of a click, move to the point. 
+                // IF we are dragging, draw from the LAST point to the NEW point.
+                if (isNewStroke) {
+                    this.drawCtx.moveTo(x, y);
+                    this.drawCtx.lineTo(x + 0.1, y + 0.1); 
                 } else {
-                    this.drawCtx.lineCap = 'round'; 
-                    this.drawCtx.lineJoin = 'round';
-                    this.drawCtx.lineWidth = size; 
-                    this.drawCtx.strokeStyle = tool === 'erase' ? '#ffffff' : color;
-                    
-                    this.drawCtx.beginPath();
-                    if (isNewStroke) {
-                        this.drawCtx.moveTo(x, y);
-                        this.drawCtx.lineTo(x + 0.1, y + 0.1);
-                    } else {
-                        this.drawCtx.moveTo(AppState.drawing.lastX, AppState.drawing.lastY);
-                        this.drawCtx.lineTo(x, y); 
-                    }
-                    this.drawCtx.stroke();
-                    
-                    AppState.drawing.lastX = x; 
-                    AppState.drawing.lastY = y;
+                    this.drawCtx.moveTo(AppState.drawing.lastX, AppState.drawing.lastY);
+                    this.drawCtx.lineTo(x, y); 
                 }
-                this.canvasTexture.needsUpdate = true;
-                if (emit) {
-                    Network.emit({
-                        type: 'draw', 
-                        payload: {x, y, color, size, tool, isNewStroke, senderId: AppState.user.id}
-                    });
-                }
+                this.drawCtx.stroke();
+                this.drawCtx.closePath(); // Ensure the path resets
+                
+                // CRITICAL: Update the anchor point for the next frame of the drag
+                AppState.drawing.lastX = x; 
+                AppState.drawing.lastY = y;
             }
+            
+            // Tell Three.js the canvas changed so it redraws the 3D board
+            this.canvasTexture.needsUpdate = true;
+        
+            if (emit) {
+                Network.emit({
+                    type: 'draw', 
+                    payload: {x, y, color, size, tool, isNewStroke, senderId: AppState.user.id}
+                });
+            }
+        }
 
             executeRemoteDraw(data) {
                 if(data.tool === 'clear') {
@@ -446,10 +453,16 @@
                 }
             }
 
-            onPointerMove(e) {
-                if (!AppState.drawing.isDrawing || AppState.room.drawerId !== AppState.user.id || AppState.room.state !== 'DRAWING') return;
+                        onPointerMove(e) {
+                // Only draw if the mouse is held down AND we are the current drawer
+                if (!AppState.drawing.isDrawing || AppState.room.drawerId !== AppState.user.id) return;
+                if (AppState.room.state !== 'DRAWING') return;
+            
                 const coords = this.getTextureCoordinates(e.clientX, e.clientY);
-                if (coords) this.executeDrawAction(coords.x, coords.y, AppState.drawing.color, AppState.drawing.size, AppState.drawing.tool, true, false);
+                if (coords) {
+                    // 'false' here because this is a continuation of the stroke, not a new click
+                    this.executeDrawAction(coords.x, coords.y, AppState.drawing.color, AppState.drawing.size, AppState.drawing.tool, true, false);
+                }
             }
 
             onPointerUp() { AppState.drawing.isDrawing = false; }
