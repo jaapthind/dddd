@@ -732,10 +732,20 @@
 
             handleWordSelect: (word) => {
                 if (!AppState.isHost) return;
+                
+                // 1. Clear any old timers first to prevent instant skipping
+                clearInterval(GameServer.timerInterval);
+                
+                // 2. Set the new state
                 AppState.room.currentWord = word;
                 AppState.room.wordLength = word.length;
                 AppState.room.state = 'DRAWING';
+                AppState.room.timeRemaining = 80; // Reset time locally
+                
+                // 3. Sync the room state to everyone BEFORE starting the new interval
                 Network.emit({type: 'sync-state', payload: AppState.room});
+                
+                // 4. Start the fresh timer
                 GameServer.startTimer(80);
             },
 
